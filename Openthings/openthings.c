@@ -29,22 +29,26 @@ SOFTWARE.
 
 #define OPENTHINGS_CRC_START 5
 
+#define RECORD_SIZE( record )                                                  \
+    sizeof( enum openthings_parameter ) +                                      \
+        sizeof( union openthings_type_description ) + record->description.len
+
 static int16_t crc( const uint8_t const *buf, size_t size );
 
 /*-----------------------------------------------------------*/
 void openthings_init_message( struct openthings_messge_context *const context,
                               const uint8_t manufacturer_id,
-                              const uint8_t product_id, const uint16_t pip,
+                              const uint8_t product_id,
                               const uint32_t sensor_id )
 {
-    struct openthings_message_header *header =
-        (struct openthings_message_header *)context->openthings_message_buffer;
+    struct openthings_message_header
+        *header = (struct openthings_message_header *)context->buffer;
 
-	context->eom = 0;
+    context->eom = 0;
 
     header->manu_id = manufacturer_id;
     header->prod_id = product_id;
-    header->pip = pip;
+    header->pip = 0;
     header->sensor_id_0 = ( uint8_t )( sensor_id & 0xFF );
     header->sensor_id_1 = ( uint8_t )( ( sensor_id & 0xFF00 ) >> 8 );
     header->sensor_id_2 = ( uint8_t )( ( sensor_id & 0xFF0000 ) >> 16 );
@@ -55,21 +59,19 @@ void openthings_init_message( struct openthings_messge_context *const context,
 void openthings_write_record( struct openthings_messge_context *const context,
                               struct openthings_message_record *const record )
 {
-    memcpy( context->openthings_message_buffer + context->eom, record,
-            record->description.len );
+    memcpy( context->buffer + context->eom, record, RECORD_SIZE( record ) );
 
-    context->eom += record->description.len;
+    context->eom += RECORD_SIZE( record );
 }
 /*-----------------------------------------------------------*/
-bool openthings_read_message( struct openthings_messge_context *const context,
-                              const struct openthings_message_record *record )
+bool openthings_read_record( struct openthings_messge_context *const context,
+                             const struct openthings_message_record *record )
 {
     if ( context->eom != 0 ) {
-        record = (const struct openthings_message_record *)&context
-                     ->openthings_message_buffer +
+        record = (const struct openthings_message_record *)&context->buffer +
                  context->eom;
 
-        context->eom += record->description.len;
+        context->eom += RECORD_SIZE( record );
         return true;
     }
 
@@ -78,22 +80,23 @@ bool openthings_read_message( struct openthings_messge_context *const context,
 /*-----------------------------------------------------------*/
 void openthings_close_message( struct openthings_messge_context *const context )
 {
-    struct openthings_message_header *header =
-        (struct openthings_message_header *)context->openthings_message_buffer;
+    struct openthings_message_header
+        *header = (struct openthings_message_header *)context->buffer;
 
     struct openthings_message_footer *footer =
-        (struct openthings_message_footer *)context->openthings_message_buffer +
-        context->eom;
+        (struct openthings_message_footer *)( context->buffer + context->eom );
 
     footer->eod = 0;
-    footer->crc = crc(
-        &context->openthings_message_buffer[OPENTHINGS_CRC_START],
-        context->eom - OPENTHINGS_CRC_START );
+    footer->crc = crc( &context->buffer[OPENTHINGS_CRC_START],
+                       context->eom - OPENTHINGS_CRC_START );
 
-    header->hdr_len = context->eom - OPENTHINGS_CRC_START;
+    context->eom += sizeof( struct openthings_message_footer );
+
+    header->hdr_len = context->eom - 1;
 }
 /*-----------------------------------------------------------*/
-void openthings_reset_message( struct openthings_messge_context *const context )
+void openthings_reset_message_payload(
+    struct openthings_messge_context *const context )
 {
     context->eom = OPENTHINGS_CRC_START;
 }
@@ -102,20 +105,25 @@ bool openthings_open_message( struct openthings_messge_context *const context )
 {
     bool result = false;
 
-    struct openthings_message_header *header =
-        (struct openthings_message_header *)context->openthings_message_buffer;
+    struct openthings_message_header
+        *header = (struct openthings_message_header *)context->buffer;
 
-    struct openthings_message_footer *footer =
-        (struct openthings_message_footer *)context->openthings_message_buffer +
-        header->hdr_len - sizeof( struct openthings_message_footer );
+    uint8_t payload_len = header->hdr_len + 1;
 
-    int16_t calculated_crc = crc(
-        ( const uint8_t *const ) &
-            context->openthings_message_buffer + OPENTHINGS_CRC_START,
-        header->hdr_len - OPENTHINGS_CRC_START );
+    struct openthings_message_footer
+        *footer = (struct openthings_message_footer
+                       *)( ( context->buffer + payload_len ) -
+                           sizeof( struct openthings_message_footer ) );
 
-    if ( footer->eod == 0 && footer->crc == calculated_crc ) {
+    int16_t calc_crc = crc(
+        ( const uint8_t *const ) & context->buffer[OPENTHINGS_CRC_START],
+        payload_len - OPENTHINGS_CRC_START -
+            sizeof( struct openthings_message_footer ) );
+
+    if ( footer->eod == 0 && footer->crc == calc_crc ) {
         context->eom = sizeof( struct openthings_message_header );
+
+        result = true;
     }
 
     return result;

@@ -1,2 +1,3 @@
-# SamdOpenthings
-SAMD21 C Openthings
+# SAMD Openthings
+
+## Running Tests

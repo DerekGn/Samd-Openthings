@@ -23,8 +23,9 @@ SOFTWARE.
 
 #ifndef OPENTHINGS_MESSAGE_H_
 #define OPENTHINGS_MESSAGE_H_
+#include "crosscompile.h"
 
-#define OPENTHINGS_MAX_MSG 256
+#define OPENTHINGS_MAX_MSG 255
 #define OPENTHINGS_MAX_REC 16
 
 enum openthings_parameter {
@@ -100,11 +101,11 @@ enum openthings_type {
 };
 
 struct openthings_messge_context {
-    uint8_t openthings_message_buffer[OPENTHINGS_MAX_MSG];
+    uint8_t buffer[OPENTHINGS_MAX_MSG];
     uint8_t eom;
 };
 
-struct openthings_message_header {
+struct __CROSS_ATTR_PACKED openthings_message_header {
     uint8_t hdr_len;
     uint8_t manu_id;
     uint8_t prod_id;
@@ -114,7 +115,7 @@ struct openthings_message_header {
     uint8_t sensor_id_0;
 };
 
-union openthings_type_description {
+union __CROSS_ATTR_PACKED openthings_type_description {
     uint8_t value;
     struct {
         uint8_t len : 4;
@@ -122,14 +123,14 @@ union openthings_type_description {
     };
 };
 
-struct openthings_message_record {
+struct __CROSS_ATTR_PACKED openthings_message_record {
     enum openthings_parameter parameter;
     union openthings_type_description description;
     uint8_t data[OPENTHINGS_MAX_REC];
 };
 
-struct openthings_message_footer {
+struct __CROSS_ATTR_PACKED openthings_message_footer {
     uint8_t eod;
-    uint16_t crc;
+    int16_t crc;
 };
 #endif /* OPENTHINGS_MESSAGE_H_ */

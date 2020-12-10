@@ -21,30 +21,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef OPENTHINGS_H_
-#define OPENTHINGS_H_
+#ifndef CROSSCOMPILE_H_
+#define CROSSCOMPILE_H_
 
-#include <stdint.h>
-#include <stdbool.h>
+#if defined(PACKED_STRUCTS)
+#   define __CROSS_ATTR_PACKED   __attribute__((packed))
+#else
+#   define __CROSS_ATTR_PACKED
+#endif
 
-#include "openthings_message.h"
-
-void openthings_close_message(
-    struct openthings_messge_context *const context );
-
-void openthings_reset_message_payload(
-    struct openthings_messge_context *const context );
-
-bool openthings_open_message( struct openthings_messge_context *const context );
-
-void openthings_init_message( struct openthings_messge_context *const context,
-                              const uint8_t manufacturer_id,
-                              const uint8_t product_id,
-                              const uint32_t sensor_id );
-
-void openthings_write_record( struct openthings_messge_context *const context,
-                              struct openthings_message_record *const record );
-
-bool openthings_read_record( struct openthings_messge_context *const context,
-                             const struct openthings_message_record *record );
-#endif /* OPENTHINGS_H_ */
+#endif /* CROSSCOMPILE_H_ */

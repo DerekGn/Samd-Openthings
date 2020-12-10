@@ -3,6 +3,10 @@
 #include "openthings.h"
 #include "openthings_message.h"
 
+#define RECORD_SIZE( record )                                                  \
+    sizeof( enum openthings_parameter ) +                                      \
+        sizeof( union openthings_type_description ) + record.description.len
+
 void setUp(void)
 {
 }
@@ -15,7 +19,7 @@ void test_openthings_init_message_eom(void)
 {
     struct openthings_messge_context context;
 
-    openthings_init_message(&context, 0xAA, 0x55, 0xBEEF, 0xDE);
+    openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
     TEST_ASSERT_EQUAL_HEX8(sizeof(struct openthings_message_header), context.eom);
 }
@@ -24,14 +28,61 @@ void test_openthings_init_message_header(void)
 {
     struct openthings_messge_context context;
 
-    openthings_init_message(&context, 0xAA, 0x55, 0xBEEF, 0xDEADBEEF);
+    openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
     struct openthings_message_header *header = (struct openthings_message_header *) &context.openthings_message_buffer;
 
     TEST_ASSERT_EQUAL_HEX8(0xAA, header->manu_id);
     TEST_ASSERT_EQUAL_HEX8(0x55, header->prod_id);
-    TEST_ASSERT_EQUAL_HEX16(0xBEEF, header->pip);
+    TEST_ASSERT_EQUAL_HEX16(0, header->pip);
     TEST_ASSERT_EQUAL_HEX8(0xEF, header->sensor_id_0);
     TEST_ASSERT_EQUAL_HEX8(0xBE, header->sensor_id_1);
     TEST_ASSERT_EQUAL_HEX8(0xAD, header->sensor_id_2);
+}
+
+void test_openthings_write_record(void)
+{
+    struct openthings_messge_context context;
+
+    context.eom = sizeof(struct openthings_message_header);
+
+    struct openthings_message_record record;
+
+    record.parameter = ALARM;
+    record.description.len = 2;
+    record.description.type = UNSIGNEDX0;
+    record.data[0] = 0x55;
+    record.data[0] = 0xAA;
+
+    openthings_write_record(&context, &record);
+
+    TEST_ASSERT_EQUAL_HEX8(sizeof(struct openthings_message_header) + RECORD_SIZE(record), context.eom);
+}
+
+void test_openthings_init_message_close(void)
+{
+    struct openthings_messge_context context;
+
+    context.eom = sizeof(struct openthings_message_header);
+
+    struct openthings_message_record record;
+
+    record.description.len = 2;
+    
+    context.eom += RECORD_SIZE(record);
+
+    openthings_close_message(&context);
+
+    struct openthings_message_header *header = 
+        (struct openthings_message_header *)context.openthings_message_buffer;
+
+    struct openthings_message_footer *footer =
+        (struct openthings_message_footer *)context.openthings_message_buffer + context.eom;
+
+    TEST_ASSERT_EQUAL_HEX8(
+        sizeof(struct openthings_message_header) +
+        RECORD_SIZE(record) +
+        sizeof(struct openthings_message_footer) - 1,
+        header->hdr_len);
+    TEST_ASSERT_EQUAL_HEX8(0x0000, footer->crc);
 }
