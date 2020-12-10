@@ -30,7 +30,7 @@ void test_openthings_init_message_header(void)
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
-    struct openthings_message_header *header = (struct openthings_message_header *) &context.openthings_message_buffer;
+    struct openthings_message_header *header = (struct openthings_message_header *) &context.buffer;
 
     TEST_ASSERT_EQUAL_HEX8(0xAA, header->manu_id);
     TEST_ASSERT_EQUAL_HEX8(0x55, header->prod_id);
@@ -59,7 +59,7 @@ void test_openthings_write_record(void)
     TEST_ASSERT_EQUAL_HEX8(sizeof(struct openthings_message_header) + RECORD_SIZE(record), context.eom);
 }
 
-void test_openthings_init_message_close(void)
+void test_openthings_close_message(void)
 {
     struct openthings_messge_context context;
 
@@ -68,21 +68,80 @@ void test_openthings_init_message_close(void)
     struct openthings_message_record record;
 
     record.description.len = 2;
-    
+
     context.eom += RECORD_SIZE(record);
 
     openthings_close_message(&context);
 
     struct openthings_message_header *header = 
-        (struct openthings_message_header *)context.openthings_message_buffer;
+        (struct openthings_message_header *)context.buffer;
 
     struct openthings_message_footer *footer =
-        (struct openthings_message_footer *)context.openthings_message_buffer + context.eom;
+        (struct openthings_message_footer *)context.buffer + context.eom;
 
     TEST_ASSERT_EQUAL_HEX8(
         sizeof(struct openthings_message_header) +
         RECORD_SIZE(record) +
         sizeof(struct openthings_message_footer) - 1,
         header->hdr_len);
+
     TEST_ASSERT_EQUAL_HEX8(0x0000, footer->crc);
+}
+
+void test_openthings_open_message(void)
+{
+    struct openthings_messge_context context;
+
+    openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
+
+    struct openthings_message_record record;
+
+    record.parameter = ALARM;
+    record.description.len = 2;
+    record.description.type = UNSIGNEDX0;
+    record.data[0] = 0x55;
+    record.data[0] = 0xAA;
+
+    openthings_write_record(&context, &record);
+
+    openthings_close_message(&context);
+
+    TEST_ASSERT_EQUAL_HEX8(1, openthings_open_message(&context));
+}
+
+void test_openthings_read_record(void)
+{
+    struct openthings_messge_context context;
+
+    openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
+
+    struct openthings_message_record record;
+
+    record.parameter = ALARM;
+    record.description.len = 2;
+    record.description.type = UNSIGNEDX0;
+    record.data[0] = 0x55;
+    record.data[0] = 0xAA;
+
+    openthings_write_record(&context, &record);
+
+    openthings_close_message(&context);
+
+    if(openthings_open_message(&context))
+    {
+        struct openthings_message_record record;
+
+        if(openthings_read_record(&context, &record))
+        {
+            TEST_ASSERT_EQUAL_HEX8(ALARM, record.parameter);
+        }
+        else
+        {
+            TEST_FAIL_MESSAGE("Record read failed");    
+        }
+    }
+    else
+    {
+        TEST_FAIL_MESSAGE("Message open failed");
+    }
 }

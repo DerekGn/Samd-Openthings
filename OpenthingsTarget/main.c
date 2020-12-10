@@ -28,10 +28,30 @@ void write_message( struct openthings_messge_context *context )
 
 void read_message( struct openthings_messge_context *context )
 {
+	uint8_t i = 0;
+	
     if ( openthings_open_message( context ) ) {
         struct openthings_message_record record;
 
         while ( openthings_read_record( context, &record ) ) {
+			
+			if( i == 0)
+			{
+				if(record.parameter != ALARM)
+				{
+					while(1);
+				}
+			}
+			
+			if( i == 1)
+			{
+				if(record.parameter != REAL_POWER)
+				{
+					while(1);
+				}
+			}
+			
+			i++;
         };
     }
 }

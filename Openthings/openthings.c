@@ -67,9 +67,11 @@ void openthings_write_record( struct openthings_messge_context *const context,
 bool openthings_read_record( struct openthings_messge_context *const context,
                              const struct openthings_message_record *record )
 {
-    if ( context->eom != 0 ) {
-        record = (const struct openthings_message_record *)&context->buffer +
-                 context->eom;
+    if ( context->buffer[context->eom] != 0 ) {
+        struct openthings_message_record *current =
+            (struct openthings_message_record *)(context->buffer + context->eom);
+
+        memcpy( (void *)record, current, RECORD_SIZE( current ) );
 
         context->eom += RECORD_SIZE( record );
         return true;
