@@ -36,10 +36,10 @@ An openthings type description.  [More...](#detailed-description)
 
 |                | Name           |
 | -------------- | -------------- |
-| uint8_t | **[value](Classes/unionopenthings__type__description.md#variable-value)**  |
-| uint8_t | **[len](Classes/unionopenthings__type__description.md#variable-len)**  |
-| enum [openthings_type](Files/openthings_8h.md#enum-openthings_type) | **[type](Classes/unionopenthings__type__description.md#variable-type)**  |
-| struct openthings_type_description::@0 | **[@1](Classes/unionopenthings__type__description.md#variable-@1)**  |
+| uint8_t | **[value](/doxybook2/mkdocs-readthedocs/Classes/unionopenthings__type__description/#variable-value)**  |
+| uint8_t | **[len](/doxybook2/mkdocs-readthedocs/Classes/unionopenthings__type__description/#variable-len)**  |
+| enum [openthings_type](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#enum-openthings_type) | **[type](/doxybook2/mkdocs-readthedocs/Classes/unionopenthings__type__description/#variable-type)**  |
+| struct openthings_type_description::@0 | **[@1](/doxybook2/mkdocs-readthedocs/Classes/unionopenthings__type__description/#variable-@1)**  |
 
 
 
@@ -243,4 +243,4 @@ struct openthings_type_description::@0 @1;
 
 -------------------------------
 
-Updated on 11 December 2020 at 15:08:38 GMT Standard Time
+Updated on 11 December 2020 at 15:14:01 GMT Standard Time

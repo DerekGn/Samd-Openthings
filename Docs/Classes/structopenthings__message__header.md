@@ -36,14 +36,14 @@ An openthings message header.  [More...](#detailed-description)
 
 |                | Name           |
 | -------------- | -------------- |
-| uint8_t | **[hdr_len](Classes/structopenthings__message__header.md#variable-hdr_len)**  |
-| uint8_t | **[manu_id](Classes/structopenthings__message__header.md#variable-manu_id)**  |
-| uint8_t | **[prod_id](Classes/structopenthings__message__header.md#variable-prod_id)**  |
-| uint8_t | **[pip_1](Classes/structopenthings__message__header.md#variable-pip_1)**  |
-| uint8_t | **[pip_0](Classes/structopenthings__message__header.md#variable-pip_0)**  |
-| uint8_t | **[sensor_id_2](Classes/structopenthings__message__header.md#variable-sensor_id_2)**  |
-| uint8_t | **[sensor_id_1](Classes/structopenthings__message__header.md#variable-sensor_id_1)**  |
-| uint8_t | **[sensor_id_0](Classes/structopenthings__message__header.md#variable-sensor_id_0)**  |
+| uint8_t | **[hdr_len](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/#variable-hdr_len)**  |
+| uint8_t | **[manu_id](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/#variable-manu_id)**  |
+| uint8_t | **[prod_id](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/#variable-prod_id)**  |
+| uint8_t | **[pip_1](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/#variable-pip_1)**  |
+| uint8_t | **[pip_0](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/#variable-pip_0)**  |
+| uint8_t | **[sensor_id_2](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/#variable-sensor_id_2)**  |
+| uint8_t | **[sensor_id_1](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/#variable-sensor_id_1)**  |
+| uint8_t | **[sensor_id_0](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/#variable-sensor_id_0)**  |
 
 
 
@@ -388,4 +388,4 @@ Byte 0 of the sensor Id.
 
 -------------------------------
 
-Updated on 11 December 2020 at 15:08:38 GMT Standard Time
+Updated on 11 December 2020 at 15:14:01 GMT Standard Time

@@ -18,18 +18,18 @@ Openthings prototypes.  [More...](#detailed-description)
 
 |                | Name           |
 | -------------- | -------------- |
-| struct | **[openthings_messge_context](Classes/structopenthings__messge__context.md)** <br>An openthings message context.  |
-| struct | **[openthings_message_header](Classes/structopenthings__message__header.md)** <br>An openthings message header.  |
-| union | **[openthings_type_description](Classes/unionopenthings__type__description.md)** <br>An openthings type description.  |
-| struct | **[openthings_message_record](Classes/structopenthings__message__record.md)** <br>An openthings record.  |
-| struct | **[openthings_message_footer](Classes/structopenthings__message__footer.md)** <br>An openthings message footer.  |
+| struct | **[openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/)** <br>An openthings message context.  |
+| struct | **[openthings_message_header](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/)** <br>An openthings message header.  |
+| union | **[openthings_type_description](/doxybook2/mkdocs-readthedocs/Classes/unionopenthings__type__description/)** <br>An openthings type description.  |
+| struct | **[openthings_message_record](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/)** <br>An openthings record.  |
+| struct | **[openthings_message_footer](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__footer/)** <br>An openthings message footer.  |
 
 ## Types
 
 |                | Name           |
 | -------------- | -------------- |
-| enum | **[openthings_parameter](Files/openthings_8h.md#enum-openthings_parameter)** { ALARM = 0x21, DBG = 0x2D, IDENTIFY = 0x3F, SOURCE_SELECTOR = 0xC0, WATER_DETECTOR = 0x41, GLASS_BREAKAGE = 0x42, CLOSURES = 0x43, DOOR_BELL = 0x44, ENERGY = 0x45, FALL_SENSOR = 0x46, GAS_VOLUME = 0x47, AIR_PRESSURE = 0x48, ILLUMINANCE = 0x49, LEVEL = 0x4C, RAINFALL = 0x4D, APPARENT_POWER = 0x50, POWER_FACTOR = 0x51, REPORT_PERIOD = 0x52, SMOKE_DETECTOR = 0x53, TIME_DATE = 0x54, VIBRATION = 0x56, WATER_VOLUME = 0x57, WIND_SPEED = 0x58, GAS_PRESSURE = 0x61, BATTERY_LEVEL = 0x62, CO_DETECTOR = 0x63, DOOR_SENSOR = 0x64, EMERGENCY_PANIC_BUTTON = 0x65, FREQUENCY = 0x66, GAS_FLOW_RATE = 0x67, RELATIVE_HUMIDITY = 0x68, CURRENT = 0x69, JOIN = 0x6A, RF_QUALITY = 0x6B, LIGHT_LEVEL = 0x6C, MOTION_DETECTOR = 0x6D, OCCUPANCY = 0x6F, REAL_POWER = 0x70, REACTIVE_POWER = 0x71, ROTATION_SPEED = 0x72, SWITCH_STATE = 0x73, TEMPERATURE = 0x74, VOLTAGE = 0x76, WATER_FLOW_RATE = 0x77, WATER_PRESSURE = 0x78, PHASE1_POWER = 0x79, PHASE2_POWER = 0x7A, PHASE3_POWER = 0x7B, THREE_PHASE_TOTAL_POWER = 0x7C } |
-| enum | **[openthings_type](Files/openthings_8h.md#enum-openthings_type)** { UNSIGNEDX0, UNSIGNEDX4, UNSIGNEDX8, UNSIGNEDX12, UNSIGNEDX16, UNSIGNEDX20, UNSIGNEDX24, CHARS, SIGNEDX0, SIGNEDX8, SIGNEDX12, SIGNEDX16, SIGNEDX24, ENUMERATION, RESERVED1, RESERVED2, FLOATING_POINT = 0x0F } |
+| enum | **[openthings_parameter](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#enum-openthings_parameter)** { ALARM = 0x21, DBG = 0x2D, IDENTIFY = 0x3F, SOURCE_SELECTOR = 0xC0, WATER_DETECTOR = 0x41, GLASS_BREAKAGE = 0x42, CLOSURES = 0x43, DOOR_BELL = 0x44, ENERGY = 0x45, FALL_SENSOR = 0x46, GAS_VOLUME = 0x47, AIR_PRESSURE = 0x48, ILLUMINANCE = 0x49, LEVEL = 0x4C, RAINFALL = 0x4D, APPARENT_POWER = 0x50, POWER_FACTOR = 0x51, REPORT_PERIOD = 0x52, SMOKE_DETECTOR = 0x53, TIME_DATE = 0x54, VIBRATION = 0x56, WATER_VOLUME = 0x57, WIND_SPEED = 0x58, GAS_PRESSURE = 0x61, BATTERY_LEVEL = 0x62, CO_DETECTOR = 0x63, DOOR_SENSOR = 0x64, EMERGENCY_PANIC_BUTTON = 0x65, FREQUENCY = 0x66, GAS_FLOW_RATE = 0x67, RELATIVE_HUMIDITY = 0x68, CURRENT = 0x69, JOIN = 0x6A, RF_QUALITY = 0x6B, LIGHT_LEVEL = 0x6C, MOTION_DETECTOR = 0x6D, OCCUPANCY = 0x6F, REAL_POWER = 0x70, REACTIVE_POWER = 0x71, ROTATION_SPEED = 0x72, SWITCH_STATE = 0x73, TEMPERATURE = 0x74, VOLTAGE = 0x76, WATER_FLOW_RATE = 0x77, WATER_PRESSURE = 0x78, PHASE1_POWER = 0x79, PHASE2_POWER = 0x7A, PHASE3_POWER = 0x7B, THREE_PHASE_TOTAL_POWER = 0x7C } |
+| enum | **[openthings_type](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#enum-openthings_type)** { UNSIGNEDX0, UNSIGNEDX4, UNSIGNEDX8, UNSIGNEDX12, UNSIGNEDX16, UNSIGNEDX20, UNSIGNEDX24, CHARS, SIGNEDX0, SIGNEDX8, SIGNEDX12, SIGNEDX16, SIGNEDX24, ENUMERATION, RESERVED1, RESERVED2, FLOATING_POINT = 0x0F } |
 
 
 
@@ -37,23 +37,23 @@ Openthings prototypes.  [More...](#detailed-description)
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[openthings_close_message](Files/openthings_8h.md#function-openthings_close_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context) <br>Close an openthings message.  |
-| void | **[openthings_reset_message_payload](Files/openthings_8h.md#function-openthings_reset_message_payload)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context) <br>Reset the message context.  |
-| void | **[openthings_get_message_header](Files/openthings_8h.md#function-openthings_get_message_header)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, struct [openthings_message_header](Classes/structopenthings__message__header.md) *const header) <br>Gets the openthings message context from the context.  |
-| bool | **[openthings_open_message](Files/openthings_8h.md#function-openthings_open_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context) <br>Opens an openthings message context.  |
-| void | **[openthings_init_message](Files/openthings_8h.md#function-openthings_init_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, const uint8_t manufacturer_id, const uint8_t product_id, const uint32_t sensor_id) <br>Initalise an openthings message.  |
-| bool | **[openthings_write_record](Files/openthings_8h.md#function-openthings_write_record)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, struct [openthings_message_record](Classes/structopenthings__message__record.md) *const record) <br>Write an openthings record to a message context.  |
-| bool | **[openthings_read_record](Files/openthings_8h.md#function-openthings_read_record)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, const struct [openthings_message_record](Classes/structopenthings__message__record.md) * record) <br>Reads an openthings record from the context.  |
-| void | **[openthings_encrypt_message](Files/openthings_8h.md#function-openthings_encrypt_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, const uint8_t encryption_id, const uint16_t noise) <br>Encrypts the message bytes in the context. The encryption is based on simple linear shift encryption. In reality is it a form of encoding rather than encryption as it can be reversed relatively easily.  |
-| void | **[openthings_decrypt_message](Files/openthings_8h.md#function-openthings_decrypt_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, const uint8_t encryption_id) <br>Decrypt the message bytes in the context.  |
+| void | **[openthings_close_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_close_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context) <br>Close an openthings message.  |
+| void | **[openthings_reset_message_payload](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_reset_message_payload)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context) <br>Reset the message context.  |
+| void | **[openthings_get_message_header](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_get_message_header)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, struct [openthings_message_header](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/) *const header) <br>Gets the openthings message context from the context.  |
+| bool | **[openthings_open_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_open_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context) <br>Opens an openthings message context.  |
+| void | **[openthings_init_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_init_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, const uint8_t manufacturer_id, const uint8_t product_id, const uint32_t sensor_id) <br>Initalise an openthings message.  |
+| bool | **[openthings_write_record](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_write_record)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, struct [openthings_message_record](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/) *const record) <br>Write an openthings record to a message context.  |
+| bool | **[openthings_read_record](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_read_record)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, const struct [openthings_message_record](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/) * record) <br>Reads an openthings record from the context.  |
+| void | **[openthings_encrypt_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_encrypt_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, const uint8_t encryption_id, const uint16_t noise) <br>Encrypts the message bytes in the context. The encryption is based on simple linear shift encryption. In reality is it a form of encoding rather than encryption as it can be reversed relatively easily.  |
+| void | **[openthings_decrypt_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#function-openthings_decrypt_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, const uint8_t encryption_id) <br>Decrypt the message bytes in the context.  |
 
 
 ## Defines
 
 |                | Name           |
 | -------------- | -------------- |
-|  | **[OPENTHINGS_MAX_MSG_SIZE](Files/openthings_8h.md#define-openthings_max_msg_size)**  |
-|  | **[OPENTHINGS_MAX_REC_SIZE](Files/openthings_8h.md#define-openthings_max_rec_size)**  |
+|  | **[OPENTHINGS_MAX_MSG_SIZE](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#define-openthings_max_msg_size)**  |
+|  | **[OPENTHINGS_MAX_REC_SIZE](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#define-openthings_max_rec_size)**  |
 
 
 
@@ -887,4 +887,4 @@ void openthings_decrypt_message(
 
 -------------------------------
 
-Updated on 11 December 2020 at 15:08:39 GMT Standard Time
+Updated on 11 December 2020 at 15:14:01 GMT Standard Time

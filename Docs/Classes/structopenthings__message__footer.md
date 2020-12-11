@@ -36,8 +36,8 @@ An openthings message footer.  [More...](#detailed-description)
 
 |                | Name           |
 | -------------- | -------------- |
-| uint8_t | **[eod](Classes/structopenthings__message__footer.md#variable-eod)**  |
-| int16_t | **[crc](Classes/structopenthings__message__footer.md#variable-crc)**  |
+| uint8_t | **[eod](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__footer/#variable-eod)**  |
+| int16_t | **[crc](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__footer/#variable-crc)**  |
 
 
 
@@ -172,4 +172,4 @@ The crc of the message.
 
 -------------------------------
 
-Updated on 11 December 2020 at 15:08:38 GMT Standard Time
+Updated on 11 December 2020 at 15:14:01 GMT Standard Time

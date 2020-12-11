@@ -36,8 +36,8 @@ An openthings message context.  [More...](#detailed-description)
 
 |                | Name           |
 | -------------- | -------------- |
-| uint8_t | **[buffer](Classes/structopenthings__messge__context.md#variable-buffer)**  |
-| uint8_t | **[eom](Classes/structopenthings__messge__context.md#variable-eom)**  |
+| uint8_t | **[buffer](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/#variable-buffer)**  |
+| uint8_t | **[eom](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/#variable-eom)**  |
 
 
 
@@ -172,4 +172,4 @@ The current end of message marker.
 
 -------------------------------
 
-Updated on 11 December 2020 at 15:08:38 GMT Standard Time
+Updated on 11 December 2020 at 15:14:01 GMT Standard Time

@@ -8,14 +8,14 @@ title: Classes
 
 
 
-* **struct [openthings_message_footer](Classes/structopenthings__message__footer.md)** <br>An openthings message footer. 
-* **struct [openthings_message_header](Classes/structopenthings__message__header.md)** <br>An openthings message header. 
-* **struct [openthings_message_record](Classes/structopenthings__message__record.md)** <br>An openthings record. 
-* **struct [openthings_messge_context](Classes/structopenthings__messge__context.md)** <br>An openthings message context. 
-* **union [openthings_type_description](Classes/unionopenthings__type__description.md)** <br>An openthings type description. 
+* **struct [openthings_message_footer](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__footer/)** <br>An openthings message footer. 
+* **struct [openthings_message_header](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/)** <br>An openthings message header. 
+* **struct [openthings_message_record](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/)** <br>An openthings record. 
+* **struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/)** <br>An openthings message context. 
+* **union [openthings_type_description](/doxybook2/mkdocs-readthedocs/Classes/unionopenthings__type__description/)** <br>An openthings type description. 
 
 
 
 -------------------------------
 
-Updated on 11 December 2020 at 15:08:39 GMT Standard Time
+Updated on 11 December 2020 at 15:14:01 GMT Standard Time

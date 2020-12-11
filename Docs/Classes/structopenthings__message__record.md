@@ -36,9 +36,9 @@ An openthings record.  [More...](#detailed-description)
 
 |                | Name           |
 | -------------- | -------------- |
-| enum [openthings_parameter](Files/openthings_8h.md#enum-openthings_parameter) | **[parameter](Classes/structopenthings__message__record.md#variable-parameter)**  |
-| union [openthings_type_description](Classes/unionopenthings__type__description.md) | **[description](Classes/structopenthings__message__record.md#variable-description)**  |
-| uint8_t | **[data](Classes/structopenthings__message__record.md#variable-data)**  |
+| enum [openthings_parameter](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#enum-openthings_parameter) | **[parameter](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/#variable-parameter)**  |
+| union [openthings_type_description](/doxybook2/mkdocs-readthedocs/Classes/unionopenthings__type__description/) | **[description](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/#variable-description)**  |
+| uint8_t | **[data](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/#variable-data)**  |
 
 
 
@@ -208,4 +208,4 @@ The parameter value.
 
 -------------------------------
 
-Updated on 11 December 2020 at 15:08:38 GMT Standard Time
+Updated on 11 December 2020 at 15:14:01 GMT Standard Time

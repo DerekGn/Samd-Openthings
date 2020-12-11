@@ -22,27 +22,27 @@ Openthings implementation.  [More...](#detailed-description)
 
 |                | Name           |
 | -------------- | -------------- |
-| int16_t | **[crc](Files/openthings_8c.md#function-crc)**(const uint8_t const * buf, size_t size)  |
-| void | **[openthings_init_message](Files/openthings_8c.md#function-openthings_init_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, const uint8_t manufacturer_id, const uint8_t product_id, const uint32_t sensor_id) <br>Initalise an openthings message.  |
-| bool | **[openthings_write_record](Files/openthings_8c.md#function-openthings_write_record)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, struct [openthings_message_record](Classes/structopenthings__message__record.md) *const record) <br>Write an openthings record to a message context.  |
-| bool | **[openthings_read_record](Files/openthings_8c.md#function-openthings_read_record)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, const struct [openthings_message_record](Classes/structopenthings__message__record.md) * record) <br>Reads an openthings record from the context.  |
-| void | **[openthings_encrypt_message](Files/openthings_8c.md#function-openthings_encrypt_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, const uint8_t encryption_id, const uint16_t noise) <br>Encrypts the message bytes in the context. The encryption is based on simple linear shift encryption. In reality is it a form of encoding rather than encryption as it can be reversed relatively easily.  |
-| void | **[openthings_decrypt_message](Files/openthings_8c.md#function-openthings_decrypt_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, const uint8_t encryption_id) <br>Decrypt the message bytes in the context.  |
-| void | **[openthings_close_message](Files/openthings_8c.md#function-openthings_close_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context) <br>Close an openthings message.  |
-| void | **[openthings_reset_message_payload](Files/openthings_8c.md#function-openthings_reset_message_payload)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context) <br>Reset the message context.  |
-| void | **[openthings_get_message_header](Files/openthings_8c.md#function-openthings_get_message_header)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context, struct [openthings_message_header](Classes/structopenthings__message__header.md) *const header) <br>Gets the openthings message context from the context.  |
-| bool | **[openthings_open_message](Files/openthings_8c.md#function-openthings_open_message)**(struct [openthings_messge_context](Classes/structopenthings__messge__context.md) *const context) <br>Opens an openthings message context.  |
+| int16_t | **[crc](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-crc)**(const uint8_t const * buf, size_t size)  |
+| void | **[openthings_init_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_init_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, const uint8_t manufacturer_id, const uint8_t product_id, const uint32_t sensor_id) <br>Initalise an openthings message.  |
+| bool | **[openthings_write_record](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_write_record)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, struct [openthings_message_record](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/) *const record) <br>Write an openthings record to a message context.  |
+| bool | **[openthings_read_record](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_read_record)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, const struct [openthings_message_record](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__record/) * record) <br>Reads an openthings record from the context.  |
+| void | **[openthings_encrypt_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_encrypt_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, const uint8_t encryption_id, const uint16_t noise) <br>Encrypts the message bytes in the context. The encryption is based on simple linear shift encryption. In reality is it a form of encoding rather than encryption as it can be reversed relatively easily.  |
+| void | **[openthings_decrypt_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_decrypt_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, const uint8_t encryption_id) <br>Decrypt the message bytes in the context.  |
+| void | **[openthings_close_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_close_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context) <br>Close an openthings message.  |
+| void | **[openthings_reset_message_payload](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_reset_message_payload)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context) <br>Reset the message context.  |
+| void | **[openthings_get_message_header](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_get_message_header)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context, struct [openthings_message_header](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__message__header/) *const header) <br>Gets the openthings message context from the context.  |
+| bool | **[openthings_open_message](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#function-openthings_open_message)**(struct [openthings_messge_context](/doxybook2/mkdocs-readthedocs/Classes/structopenthings__messge__context/) *const context) <br>Opens an openthings message context.  |
 
 
 ## Defines
 
 |                | Name           |
 | -------------- | -------------- |
-|  | **[BYTE_0](Files/openthings_8c.md#define-byte_0)**(value)  |
-|  | **[BYTE_1](Files/openthings_8c.md#define-byte_1)**(value)  |
-|  | **[BYTE_2](Files/openthings_8c.md#define-byte_2)**(value)  |
-|  | **[OPENTHINGS_CRC_START](Files/openthings_8c.md#define-openthings_crc_start)**  |
-|  | **[RECORD_SIZE](Files/openthings_8c.md#define-record_size)**(record)  |
+|  | **[BYTE_0](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#define-byte_0)**(value)  |
+|  | **[BYTE_1](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#define-byte_1)**(value)  |
+|  | **[BYTE_2](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#define-byte_2)**(value)  |
+|  | **[OPENTHINGS_CRC_START](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#define-openthings_crc_start)**  |
+|  | **[RECORD_SIZE](/doxybook2/mkdocs-readthedocs/Files/openthings_8c/#define-record_size)**(record)  |
 
 
 
@@ -698,8 +698,8 @@ The offset from the start of the openthings header that the CRC is \ calculated 
 ```cpp
 #define RECORD_SIZE(
     record
-)     sizeof( enum [openthings_parameter](Files/openthings_8h.md#enum-openthings_parameter) ) +                                      \
-        sizeof( union [openthings_type_description](Classes/unionopenthings__type__description.md) ) +                          \
+)     sizeof( enum [openthings_parameter](/doxybook2/mkdocs-readthedocs/Files/openthings_8h/#enum-openthings_parameter) ) +                                      \
+        sizeof( union [openthings_type_description](/doxybook2/mkdocs-readthedocs/Classes/unionopenthings__type__description/) ) +                          \
         record->description.len
 ```
 
@@ -931,4 +931,4 @@ static int16_t crc( const uint8_t const *buf, size_t size )
 
 -------------------------------
 
-Updated on 11 December 2020 at 15:08:38 GMT Standard Time
+Updated on 11 December 2020 at 15:14:01 GMT Standard Time
