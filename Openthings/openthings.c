@@ -51,7 +51,7 @@
     sizeof( enum openthings_parameter ) +                                      \
         sizeof( union openthings_type_description ) +                          \
         record->description.len /**< A macro for calculating the total size of \
-                                   an openthings record.  */
+                                    an openthings record.  */
 
 static int16_t crc( const uint8_t const *buf, size_t size );
 
@@ -65,7 +65,7 @@ void openthings_init_message( struct openthings_messge_context *const context,
         *header = (struct openthings_message_header *)context->buffer;
 
     context->eom = 0;
-	header->hdr_len = 0;
+    header->hdr_len = 0;
     header->manu_id = manufacturer_id;
     header->prod_id = product_id;
     header->pip_1 = 0;
@@ -133,17 +133,16 @@ void openthings_encrypt_message(
 /*-----------------------------------------------------------*/
 void openthings_decrypt_message(
     struct openthings_messge_context *const context,
-	const uint8_t encryption_id)
+    const uint8_t encryption_id )
 {
     struct openthings_message_header
         *header = (struct openthings_message_header *)context->buffer;
 
     uint16_t message_pip;
     size_t i;
-    
-    message_pip = ( ( ( (uint16_t)header->pip_1 ) << 8 ) &
-                    header->pip_0 );
-					
+
+    message_pip = ( ( ( (uint16_t)header->pip_1 ) << 8 ) | header->pip_0 );
+
     seed( encryption_id, message_pip );
 
     for ( i = OPENTHINGS_CRC_START; i <= header->hdr_len; ++i ) {

@@ -14,6 +14,42 @@ void tearDown(void)
 {
 }
 
+void write_test_record(
+    struct openthings_messge_context *const context )
+{
+    struct openthings_message_record record;
+
+    record.parameter = ALARM;
+    record.description.len = 2;
+    record.description.type = UNSIGNEDX0;
+    record.data[0] = 0x55;
+    record.data[0] = 0xAA;
+
+    openthings_write_record(context, &record);
+}
+
+void open_context_and_assert_test_record(
+    struct openthings_messge_context *const context)
+{
+    if(openthings_open_message(context))
+    {
+        struct openthings_message_record record;
+
+        if(openthings_read_record(context, &record))
+        {
+            TEST_ASSERT_EQUAL_HEX8(ALARM, record.parameter);
+        }
+        else
+        {
+            TEST_FAIL_MESSAGE("Record read failed");    
+        }
+    }
+    else
+    {
+        TEST_FAIL_MESSAGE("Message open failed");
+    }
+}
+
 void test_openthings_init_message_eom(void)
 {
     struct openthings_messge_context context;
@@ -105,15 +141,7 @@ void test_openthings_open_message(void)
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
-    struct openthings_message_record record;
-
-    record.parameter = ALARM;
-    record.description.len = 2;
-    record.description.type = UNSIGNEDX0;
-    record.data[0] = 0x55;
-    record.data[0] = 0xAA;
-
-    openthings_write_record(&context, &record);
+    write_test_record(&context);
 
     openthings_close_message(&context);
 
@@ -126,35 +154,11 @@ void test_openthings_read_record(void)
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
-    struct openthings_message_record record;
-
-    record.parameter = ALARM;
-    record.description.len = 2;
-    record.description.type = UNSIGNEDX0;
-    record.data[0] = 0x55;
-    record.data[0] = 0xAA;
-
-    openthings_write_record(&context, &record);
+    write_test_record(&context);
 
     openthings_close_message(&context);
 
-    if(openthings_open_message(&context))
-    {
-        struct openthings_message_record record;
-
-        if(openthings_read_record(&context, &record))
-        {
-            TEST_ASSERT_EQUAL_HEX8(ALARM, record.parameter);
-        }
-        else
-        {
-            TEST_FAIL_MESSAGE("Record read failed");    
-        }
-    }
-    else
-    {
-        TEST_FAIL_MESSAGE("Message open failed");
-    }
+    open_context_and_assert_test_record(&context);
 }
 
 void test_openthings_read_header()
@@ -174,4 +178,21 @@ void test_openthings_read_header()
     TEST_ASSERT_EQUAL_HEX8(0xEF, header.sensor_id_0);
     TEST_ASSERT_EQUAL_HEX8(0xBE, header.sensor_id_1);
     TEST_ASSERT_EQUAL_HEX8(0xAD, header.sensor_id_2);
+}
+
+void test_openthings_encrypt_decrypt()
+{
+    struct openthings_messge_context context;
+
+    openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
+
+    write_test_record(&context);
+
+    openthings_close_message(&context);
+
+    openthings_encrypt_message(&context, 10, 0xF4);
+
+    openthings_decrypt_message(&context, 10);
+
+    open_context_and_assert_test_record(&context);
 }
