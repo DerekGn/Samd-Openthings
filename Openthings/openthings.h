@@ -293,12 +293,14 @@ bool openthings_read_record( struct openthings_messge_context *const context,
                              const struct openthings_message_record *record );
 
 /**
- * \brief Encrypts the message bytes in the context
- * 
+ * \brief Encrypts the message bytes in the context. The encryption is based on
+ * simple linear shift encryption. In reality is it a form of encoding rather
+ * than encryption as it can be reversed relatively easily.
+ *
  * \param[in] context The openthings message context.
  * \param[in] encryption_id The encryption id
  * \param[in] noise	The noise source value for randomizing encryption
- * 
+ *
  * \return void
  */
 void openthings_encrypt_message(
@@ -307,13 +309,13 @@ void openthings_encrypt_message(
 
 /**
  * \brief Decrypt the message bytes in the context
- * 
+ *
  * \param[in] context The openthings message context.
  * \param[in] encryption_id The encryption id
- * 
+ *
  * \return void
  */
 void openthings_decrypt_message(
     struct openthings_messge_context *const context,
-	const uint8_t encryption_id );
+    const uint8_t encryption_id );
 #endif /* OPENTHINGS_H_ */

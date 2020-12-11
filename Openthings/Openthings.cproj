@@ -89,6 +89,7 @@
     </ToolchainSettings>
     <OutputFileName>libopenthings</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
+    <PostBuildEvent>doxybook2 --input $(MSBuildProjectDirectory)\doxygen\xml --output $(MSBuildProjectDirectory)\..\Docs</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>

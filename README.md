@@ -2,7 +2,15 @@
 
 A library for the serializing and deserializing of [Openthings](http://www.o-things.com/) compliant messages targeting the Microchip SAMD21 series of Arm® Cortex®-M0+ CPU's.
 
+The openthings protocol is used in a number of energenie mihome products.
+
 The library has no external dependencies and can be re targeted to other classes of mcu.
+
+The library implements read,write and encrypt and decrypt of openthings messages.
+
+Note the encryption as defined in the openthings specification is not really encryption more specifically it is a form of encoding. The encryption is based around linear shift encryption. It is therefore not advisable to use it for communications that require security from eavesdropping or tampering of messages. It has been included in the library so that it is compatible with existing sensors etc.
+
+It is preferable to use other secure transport mechanisms than rely on the linear shift mechanism.
 
 ## Code Size
 
@@ -51,3 +59,5 @@ section | size | addr
 Total || 0x24c
 
 ## Unit Tests
+
+The library has been unit tested using the [ceedling](https://github.com/ThrowTheSwitch/Ceedling) build/test system for c. Once ceedling has been installed the tests can be compiled and executed from 
