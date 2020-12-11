@@ -4,7 +4,7 @@
   <ProjectName>Openthings</ProjectName>
   <DoxyExePath>C:\Program Files\doxygen\bin\doxygen.exe</DoxyExePath>
   <UseDefaultSettings>false</UseDefaultSettings>
-  <GenerateAsPartOfBuild>true</GenerateAsPartOfBuild>
+  <GenerateAsPartOfBuild>false</GenerateAsPartOfBuild>
   <ConfigFilePath>D:\Git\SamdOpenthings\Openthings\doxyfile</ConfigFilePath>
   <OutputDirPath>D:\Git\SamdOpenthings\Openthings\doxygen</OutputDirPath>
   <Excluded>D:\Git\SamdOpenthings\Openthings\.clang-format</Excluded>
