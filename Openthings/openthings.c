@@ -1,31 +1,39 @@
-/* MIT License
+/**
+ * \file
+ *
+ * \brief Openthings implementation
+ *
+ * Copyright (c) 2020 Derek Goslin
+ *
+ * @author Derek Goslin
+ *
+ *
+ * MIT License
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
 
-Copyright (c) 2020 DerekGn
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
-#include "openthings.h"
-#include "openthings_message.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include "openthings.h"
 
 #define OPENTHINGS_CRC_START 5
 
@@ -56,20 +64,29 @@ void openthings_init_message( struct openthings_messge_context *const context,
     context->eom += sizeof( struct openthings_message_header );
 }
 /*-----------------------------------------------------------*/
-void openthings_write_record( struct openthings_messge_context *const context,
+bool openthings_write_record( struct openthings_messge_context *const context,
                               struct openthings_message_record *const record )
 {
-    memcpy( context->buffer + context->eom, record, RECORD_SIZE( record ) );
+    if ( context->eom + RECORD_SIZE( record ) +
+             sizeof( struct openthings_message_footer ) <=
+         OPENTHINGS_MAX_MSG_SIZE ) {
+        memcpy( context->buffer + context->eom, record, RECORD_SIZE( record ) );
 
-    context->eom += RECORD_SIZE( record );
+        context->eom += RECORD_SIZE( record );
+
+        return true;
+    }
+
+    return false;
 }
 /*-----------------------------------------------------------*/
 bool openthings_read_record( struct openthings_messge_context *const context,
                              const struct openthings_message_record *record )
 {
     if ( context->buffer[context->eom] != 0 ) {
-        struct openthings_message_record *current =
-            (struct openthings_message_record *)(context->buffer + context->eom);
+        struct openthings_message_record
+            *current = (struct openthings_message_record *)( context->buffer +
+                                                             context->eom );
 
         memcpy( (void *)record, current, RECORD_SIZE( current ) );
 
@@ -101,6 +118,12 @@ void openthings_reset_message_payload(
     struct openthings_messge_context *const context )
 {
     context->eom = OPENTHINGS_CRC_START;
+}
+/*-----------------------------------------------------------*/
+void openthings_get_message_header(
+    struct openthings_messge_context *const context,
+    struct openthings_message_record *const record )
+{
 }
 /*-----------------------------------------------------------*/
 bool openthings_open_message( struct openthings_messge_context *const context )

@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Ceedling build files
 Build/
+
+# Doxygen build files
+Doxygen/
