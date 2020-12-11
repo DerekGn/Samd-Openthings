@@ -34,12 +34,24 @@
 #include <stdint.h>
 #include <string.h>
 #include "openthings.h"
+#include "encrypt.h"
 
-#define OPENTHINGS_CRC_START 5
+#define BYTE_0( value )                                                        \
+    ( (uint8_t)value & 0xff ) /**< Mask byte 0 from a value. */
+#define BYTE_1( value )                                                        \
+    ( ( uint8_t )( value >> 8 ) & 0xff ) /**< Mask byte 1 from a value. */
+#define BYTE_2( value )                                                        \
+    ( ( uint8_t )( value >> 16 ) & 0xff ) /**< Mask byte 2 from a value. */
+
+#define OPENTHINGS_CRC_START                                                   \
+    5 /**< The offset from the start of the openthings header that the CRC is  \
+         calculated from */
 
 #define RECORD_SIZE( record )                                                  \
     sizeof( enum openthings_parameter ) +                                      \
-        sizeof( union openthings_type_description ) + record->description.len
+        sizeof( union openthings_type_description ) +                          \
+        record->description.len /**< A macro for calculating the total size of \
+                                   an openthings record.  */
 
 static int16_t crc( const uint8_t const *buf, size_t size );
 
@@ -53,13 +65,14 @@ void openthings_init_message( struct openthings_messge_context *const context,
         *header = (struct openthings_message_header *)context->buffer;
 
     context->eom = 0;
-
+	header->hdr_len = 0;
     header->manu_id = manufacturer_id;
     header->prod_id = product_id;
-    header->pip = 0;
-    header->sensor_id_0 = ( uint8_t )( sensor_id & 0xFF );
-    header->sensor_id_1 = ( uint8_t )( ( sensor_id & 0xFF00 ) >> 8 );
-    header->sensor_id_2 = ( uint8_t )( ( sensor_id & 0xFF0000 ) >> 16 );
+    header->pip_1 = 0;
+    header->pip_0 = 0;
+    header->sensor_id_0 = BYTE_0( sensor_id );
+    header->sensor_id_1 = BYTE_1( sensor_id );
+    header->sensor_id_2 = BYTE_2( sensor_id );
 
     context->eom += sizeof( struct openthings_message_header );
 }
@@ -97,6 +110,47 @@ bool openthings_read_record( struct openthings_messge_context *const context,
     return false;
 }
 /*-----------------------------------------------------------*/
+void openthings_encrypt_message(
+    struct openthings_messge_context *const context,
+    const uint8_t encryption_id, const uint16_t noise )
+{
+    struct openthings_message_header
+        *header = (struct openthings_message_header *)context->buffer;
+
+    size_t i = 0;
+    uint16_t message_pip;
+
+    randomise_seed( noise );
+    message_pip = generate_pip( encryption_id );
+
+    header->pip_0 = BYTE_0( message_pip );
+    header->pip_1 = BYTE_1( message_pip );
+
+    for ( i = OPENTHINGS_CRC_START; i <= header->hdr_len; ++i ) {
+        context->buffer[i] = encrypt_decrypt( context->buffer[i] );
+    }
+}
+/*-----------------------------------------------------------*/
+void openthings_decrypt_message(
+    struct openthings_messge_context *const context,
+	const uint8_t encryption_id)
+{
+    struct openthings_message_header
+        *header = (struct openthings_message_header *)context->buffer;
+
+    uint16_t message_pip;
+    size_t i;
+    
+    message_pip = ( ( ( (uint16_t)header->pip_1 ) << 8 ) &
+                    header->pip_0 );
+					
+    seed( encryption_id, message_pip );
+
+    for ( i = OPENTHINGS_CRC_START; i <= header->hdr_len; ++i ) {
+        context->buffer[i] = encrypt_decrypt( context->buffer[i] );
+    }
+}
+/*-----------------------------------------------------------*/
 void openthings_close_message( struct openthings_messge_context *const context )
 {
     struct openthings_message_header
@@ -122,8 +176,10 @@ void openthings_reset_message_payload(
 /*-----------------------------------------------------------*/
 void openthings_get_message_header(
     struct openthings_messge_context *const context,
-    struct openthings_message_record *const record )
+    struct openthings_message_header *const header )
 {
+    memcpy( header, context->buffer,
+            sizeof( struct openthings_message_header ) );
 }
 /*-----------------------------------------------------------*/
 bool openthings_open_message( struct openthings_messge_context *const context )

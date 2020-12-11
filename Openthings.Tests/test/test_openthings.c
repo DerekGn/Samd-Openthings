@@ -1,7 +1,6 @@
 #include "unity.h"
-
+#include "encrypt.c"
 #include "openthings.h"
-#include "openthings_message.h"
 
 #define RECORD_SIZE( record )                                                  \
     sizeof( enum openthings_parameter ) +                                      \
@@ -34,7 +33,8 @@ void test_openthings_init_message_header(void)
 
     TEST_ASSERT_EQUAL_HEX8(0xAA, header->manu_id);
     TEST_ASSERT_EQUAL_HEX8(0x55, header->prod_id);
-    TEST_ASSERT_EQUAL_HEX16(0, header->pip);
+    TEST_ASSERT_EQUAL_HEX16(0, header->pip_0);
+    TEST_ASSERT_EQUAL_HEX16(0, header->pip_1);
     TEST_ASSERT_EQUAL_HEX8(0xEF, header->sensor_id_0);
     TEST_ASSERT_EQUAL_HEX8(0xBE, header->sensor_id_1);
     TEST_ASSERT_EQUAL_HEX8(0xAD, header->sensor_id_2);
@@ -54,9 +54,20 @@ void test_openthings_write_record(void)
     record.data[0] = 0x55;
     record.data[0] = 0xAA;
 
-    openthings_write_record(&context, &record);
+    TEST_ASSERT_EQUAL_HEX8(1, openthings_write_record(&context, &record));
 
     TEST_ASSERT_EQUAL_HEX8(sizeof(struct openthings_message_header) + RECORD_SIZE(record), context.eom);
+}
+
+void test_openthings_write_record_no_space(void)
+{
+    struct openthings_messge_context context;
+
+    context.eom = OPENTHINGS_MAX_MSG_SIZE;
+
+    struct openthings_message_record record;
+
+    TEST_ASSERT_EQUAL_HEX8(0, openthings_write_record(&context, &record));
 }
 
 void test_openthings_close_message(void)
@@ -144,4 +155,23 @@ void test_openthings_read_record(void)
     {
         TEST_FAIL_MESSAGE("Message open failed");
     }
+}
+
+void test_openthings_read_header()
+{
+    struct openthings_messge_context context;
+
+    openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
+
+    struct openthings_message_header header;
+    openthings_get_message_header(&context, &header);
+
+    TEST_ASSERT_EQUAL_HEX8(0, header.hdr_len);
+    TEST_ASSERT_EQUAL_HEX8(0xAA, header.manu_id);
+    TEST_ASSERT_EQUAL_HEX8(0, header.pip_0);
+    TEST_ASSERT_EQUAL_HEX8(0, header.pip_1);
+    TEST_ASSERT_EQUAL_HEX8(0x55, header.prod_id);
+    TEST_ASSERT_EQUAL_HEX8(0xEF, header.sensor_id_0);
+    TEST_ASSERT_EQUAL_HEX8(0xBE, header.sensor_id_1);
+    TEST_ASSERT_EQUAL_HEX8(0xAD, header.sensor_id_2);
 }

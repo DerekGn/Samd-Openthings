@@ -144,7 +144,8 @@ struct __CROSS_ATTR_PACKED openthings_message_header {
                         message excluding this byte. */
     uint8_t manu_id; /**< The manufacturer Id. */
     uint8_t prod_id; /**< The product Id. */
-    uint16_t pip;    /**< Reserved bytes. Used for encryption seed. */
+    uint8_t pip_1;   /**< Reserved bytes. Used for encryption seed byte 1. */
+    uint8_t pip_0;   /**< Reserved bytes. Used for encryption seed byte 0. */
     uint8_t sensor_id_2; /**< Byte 2 of the sensor Id. */
     uint8_t sensor_id_1; /**< Byte 1 of the sensor Id. */
     uint8_t sensor_id_0; /**< Byte 0 of the sensor Id. */
@@ -159,7 +160,7 @@ struct __CROSS_ATTR_PACKED openthings_message_header {
  * being sent (in bytes)
  */
 union __CROSS_ATTR_PACKED openthings_type_description {
-    uint8_t value;
+    uint8_t value; /**< The value of the openthings type description. */
     struct {
         uint8_t len : 4;               /**< The length of the data. */
         enum openthings_type type : 4; /**< The type of the data. */
@@ -227,7 +228,7 @@ void openthings_reset_message_payload(
  */
 void openthings_get_message_header(
     struct openthings_messge_context *const context,
-    struct openthings_message_record *const header );
+    struct openthings_message_header *const header );
 
 /**
  * \brief Opens an openthings message context.
@@ -281,7 +282,8 @@ bool openthings_write_record( struct openthings_messge_context *const context,
  * The context must be allocated by the caller.
  * The record must be allocated by the caller.
  *
- * The record must be reused on each call to the openthings_read_record as it is context for the next read from the message context
+ * The record must be reused on each call to the openthings_read_record as it is
+ * context for the next read from the message context.
  *
  * \return bool	A return value of true indicates that the read succeeded and
  * there are potentially more records contained within the context. A value of
@@ -289,4 +291,29 @@ bool openthings_write_record( struct openthings_messge_context *const context,
  */
 bool openthings_read_record( struct openthings_messge_context *const context,
                              const struct openthings_message_record *record );
+
+/**
+ * \brief Encrypts the message bytes in the context
+ * 
+ * \param[in] context The openthings message context.
+ * \param[in] encryption_id The encryption id
+ * \param[in] noise	The noise source value for randomizing encryption
+ * 
+ * \return void
+ */
+void openthings_encrypt_message(
+    struct openthings_messge_context *const context,
+    const uint8_t encryption_id, const uint16_t noise );
+
+/**
+ * \brief Decrypt the message bytes in the context
+ * 
+ * \param[in] context The openthings message context.
+ * \param[in] encryption_id The encryption id
+ * 
+ * \return void
+ */
+void openthings_decrypt_message(
+    struct openthings_messge_context *const context,
+	const uint8_t encryption_id );
 #endif /* OPENTHINGS_H_ */

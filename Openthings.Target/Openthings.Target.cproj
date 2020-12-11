@@ -13,7 +13,7 @@
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
     <AssemblyName>OpenthingsTarget</AssemblyName>
-    <Name>OpenthingsTarget</Name>
+    <Name>Openthings.Target</Name>
     <RootNamespace>OpenthingsTarget</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>

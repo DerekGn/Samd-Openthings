@@ -6,9 +6,9 @@ The library has no external dependencies and can be re targeted to other classes
 
 ## Code Size
 
-Build | Code Size | Static/Global Variables
----------|----------|---------|---------
- Debug | B1 | C1 |
- Release | B2 | C2 |
- 
+text | data | bss | dec | hex | build
+---------|----------|---------|---------|---------|---------
+318 | 0 | 0 | 318 | 13e | release
+318 | 0 | 0 | 318 | 13e | debug
+
 ## Unit Tests

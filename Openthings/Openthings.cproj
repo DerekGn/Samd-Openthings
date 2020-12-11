@@ -144,6 +144,12 @@
     <Compile Include="crosscompile.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="encrypt.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="encrypt.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="openthings.c">
       <SubType>compile</SubType>
     </Compile>
