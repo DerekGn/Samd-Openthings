@@ -91,7 +91,7 @@ int main( void )
 
     write_message( &context );
 
-    openthings_encrypt_message( &context, 10 );
+    openthings_encrypt_message( &context, 10, 0xF4 );
 
     openthings_decrypt_message( &context, 10 );
 
