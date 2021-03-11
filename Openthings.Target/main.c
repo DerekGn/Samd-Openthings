@@ -56,38 +56,31 @@ void write_message( struct openthings_messge_context *context )
     openthings_write_record( context, &record );
 
     openthings_close_message( context );
-	
-	openthings_encrypt_message(context, 10, 0xF4);
 }
 
 void read_message( struct openthings_messge_context *context )
 {
-	uint8_t i = 0;
-	
-	openthings_decrypt_message(context, 10 );
-	
+    uint8_t i = 0;
+
     if ( openthings_open_message( context ) ) {
         struct openthings_message_record record;
 
         while ( openthings_read_record( context, &record ) ) {
-			
-			if( i == 0)
-			{
-				if(record.parameter != ALARM)
-				{
-					while(1);
-				}
-			}
-			
-			if( i == 1)
-			{
-				if(record.parameter != REAL_POWER)
-				{
-					while(1);
-				}
-			}
-			
-			i++;
+            if ( i == 0 ) {
+                if ( record.parameter != ALARM ) {
+                    while ( 1 )
+                        ;
+                }
+            }
+
+            if ( i == 1 ) {
+                if ( record.parameter != REAL_POWER ) {
+                    while ( 1 )
+                        ;
+                }
+            }
+
+            i++;
         };
     }
 }
@@ -98,9 +91,12 @@ int main( void )
 
     write_message( &context );
 
+    openthings_encrypt_message( &context, 10 );
+
+    openthings_decrypt_message( &context, 10 );
+
     read_message( &context );
 
-	
     while ( 1 )
         ;
 }

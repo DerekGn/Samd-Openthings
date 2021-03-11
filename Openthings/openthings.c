@@ -167,12 +167,6 @@ void openthings_close_message( struct openthings_messge_context *const context )
     header->hdr_len = context->eom - 1;
 }
 /*-----------------------------------------------------------*/
-void openthings_reset_message_payload(
-    struct openthings_messge_context *const context )
-{
-    context->eom = OPENTHINGS_CRC_START;
-}
-/*-----------------------------------------------------------*/
 void openthings_get_message_header(
     struct openthings_messge_context *const context,
     struct openthings_message_header *const header )

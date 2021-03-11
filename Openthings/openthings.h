@@ -202,20 +202,6 @@ void openthings_close_message(
     struct openthings_messge_context *const context );
 
 /**
- * \brief Reset the message context
- *
- * The context must be allocated by the caller.
- *
- * \param[in] context The openthings message context.
- *
- * The context must be allocated by the caller.
- *
- * \return void
- */
-void openthings_reset_message_payload(
-    struct openthings_messge_context *const context );
-
-/**
  * \brief Gets the openthings message context from the context
  *
  * \param[in] context The openthings message context.

@@ -58,6 +58,82 @@ section | size | addr
 .ARM.attributes | 0x32 | 0x0
 Total || 0x24c
 
+## Using the library
+
+### Write Openthings Context
+
+``` C
+    struct openthings_messge_context context;
+    
+    // Init the context
+    openthings_init_message( context, 0xAA, 0x55, 0xDEADBEEF );
+
+    struct openthings_message_record record;
+
+    record.parameter = ALARM;
+    record.description.len = 2;
+    record.description.type = UNSIGNEDX0;
+    record.data[0] = 0x1;
+    record.data[1] = 0x2;
+
+    // Add a record
+    openthings_write_record( context, &record );
+
+    record.parameter = REAL_POWER;
+    record.description.len = 1;
+    record.description.type = UNSIGNEDX0;
+    record.data[0] = 0xAA;
+
+    openthings_write_record( context, &record );
+
+    // Close the message
+    openthings_close_message( context );
+```
+
+### Read Openthings Context
+
+``` c
+
+uint8_t i = 0;
+
+if ( openthings_open_message( context ) ) {
+    struct openthings_message_record record;
+
+    while ( openthings_read_record( context, &record ) ) {
+        if ( i == 0 ) {
+            if ( record.parameter != ALARM ) {
+                // process record
+            }
+        }
+
+        if ( i == 1 ) {
+            if ( record.parameter != REAL_POWER ) {
+                // process record
+            }
+        }
+
+        i++;
+    };
+}
+```
+
+### Encrypt Openthings Context
+
+``` c
+// Encrypt the context passing encryption id and noise seed
+openthings_encrypt_message( &context, 10, 0xF4 );
+
+```
+
+### Decrypt Openthings Context
+
+``` c
+// Decrypt the context passing encryption id
+openthings_decrypt_message( &context, 10 );
+```
+
 ## Unit Tests
 
-The library has been unit tested using the [ceedling](https://github.com/ThrowTheSwitch/Ceedling) build/test system for c. Once ceedling has been installed the tests can be compiled and executed from 
+The library has been unit tested using the [ceedling](https://github.com/ThrowTheSwitch/Ceedling) build/test system for c. Once ceedling has been installed the tests can be compiled and executed from \SamdOpenthings\Openthings.Tests
+
+Execute _ceedling test:all_ to run the tests.
