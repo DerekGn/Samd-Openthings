@@ -19,7 +19,7 @@ It is preferable to use other secure transport mechanisms than rely on the linea
 text | data | bss | dec | hex | filename | build
 ---------|----------|---------|---------|---------|---------|---------
 112 | 0 | 2 | 114 | 72 | encrypt.o (ex libopenthings.a) | release
-448 | 0 | 0 | 448 | 1c0 | openthings.o (ex libopenthings.a) | release
+436 | 0 | 0 | 436 | 1b4 | openthings.o (ex libopenthings.a) | release
 
 
 **encrypt.o   (ex libopenthings.a):**
@@ -50,8 +50,7 @@ section | size | addr
 .text.openthings_read_record | 0x3c | 0x0
 .text.openthings_encrypt_message | 0x3c | 0x0
 .text.openthings_decrypt_message | 0x30 | 0x0
-.text.openthings_close_message | 0x30 | 0x0
-.text.openthings_reset_message_payload | 0x8 | 0x0
+.text.openthings_close_message | 0x2C | 0x0
 .text.openthings_get_message_header | 0x14 | 0x0
 .text.openthings_open_message | 0x3c | 0x0
 .comment | 0x5a | 0x0
