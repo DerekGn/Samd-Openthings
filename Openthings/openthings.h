@@ -186,7 +186,8 @@ struct __CROSS_ATTR_PACKED openthings_message_record {
  */
 struct __CROSS_ATTR_PACKED openthings_message_footer {
     uint8_t eod; /**< The end of message marker. */
-    int16_t crc; /**< The crc of the message. */
+    uint8_t crc_1; /**< Byte 1 of the crc of the message. */
+	uint8_t crc_0; /**< Byte 0 of the crc of the message. */
 };
 
 /**

@@ -45,13 +45,13 @@
 
 #define OPENTHINGS_CRC_START                                                   \
     5 /**< The offset from the start of the openthings header that the CRC is  \
-         calculated from */
+         \ calculated from */
 
 #define RECORD_SIZE( record )                                                  \
     sizeof( enum openthings_parameter ) +                                      \
         sizeof( union openthings_type_description ) +                          \
         record->description.len /**< A macro for calculating the total size of \
-                                    an openthings record.  */
+                                   \ an openthings record.  */
 
 static int16_t crc( const uint8_t const *buf, size_t size );
 
@@ -158,9 +158,12 @@ void openthings_close_message( struct openthings_messge_context *const context )
     struct openthings_message_footer *footer =
         (struct openthings_message_footer *)( context->buffer + context->eom );
 
+    int16_t msg_crc = crc( &context->buffer[OPENTHINGS_CRC_START],
+                           context->eom - OPENTHINGS_CRC_START );
+
     footer->eod = 0;
-    footer->crc = crc( &context->buffer[OPENTHINGS_CRC_START],
-                       context->eom - OPENTHINGS_CRC_START );
+    footer->crc_0 = BYTE_0( msg_crc );
+    footer->crc_1 = BYTE_1( msg_crc );
 
     context->eom += sizeof( struct openthings_message_footer );
 
@@ -194,7 +197,9 @@ bool openthings_open_message( struct openthings_messge_context *const context )
         payload_len - OPENTHINGS_CRC_START -
             sizeof( struct openthings_message_footer ) );
 
-    if ( footer->eod == 0 && footer->crc == calc_crc ) {
+    int16_t exp_crc = ( ( ( (uint16_t)footer->crc_1 ) << 8 ) | footer->crc_0 );
+
+    if ( footer->eod == 0 && exp_crc == calc_crc ) {
         context->eom = sizeof( struct openthings_message_header );
 
         result = true;
