@@ -159,7 +159,7 @@ void openthings_close_message( struct openthings_messge_context *const context )
         (struct openthings_message_footer *)( context->buffer + context->eom );
 
     int16_t msg_crc = crc( &context->buffer[OPENTHINGS_CRC_START],
-                           context->eom - OPENTHINGS_CRC_START );
+                           ( context->eom - OPENTHINGS_CRC_START ) + 1 );
 
     footer->eod = 0;
     footer->crc_0 = BYTE_0( msg_crc );
