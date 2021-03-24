@@ -45,13 +45,13 @@
 
 #define OPENTHINGS_CRC_START                                                   \
     5 /**< The offset from the start of the openthings header that the CRC is  \
-         \ calculated from */
+         \ \ \ calculated from */
 
 #define RECORD_SIZE( record )                                                  \
     sizeof( enum openthings_parameter ) +                                      \
         sizeof( union openthings_type_description ) +                          \
         record->description.len /**< A macro for calculating the total size of \
-                                   \ an openthings record.  */
+                                   \ \ \ an openthings record.  */
 
 static int16_t crc( const uint8_t const *buf, size_t size );
 
@@ -143,10 +143,12 @@ void openthings_decrypt_message(
 
     message_pip = ( ( ( (uint16_t)header->pip_1 ) << 8 ) | header->pip_0 );
 
-    seed( encryption_id, message_pip );
+    if ( message_pip != 0 ) {
+        seed( encryption_id, message_pip );
 
-    for ( i = OPENTHINGS_CRC_START; i <= header->hdr_len; ++i ) {
-        context->buffer[i] = encrypt_decrypt( context->buffer[i] );
+        for ( i = OPENTHINGS_CRC_START; i <= header->hdr_len; ++i ) {
+            context->buffer[i] = encrypt_decrypt( context->buffer[i] );
+        }
     }
 }
 /*-----------------------------------------------------------*/
@@ -158,10 +160,11 @@ void openthings_close_message( struct openthings_messge_context *const context )
     struct openthings_message_footer *footer =
         (struct openthings_message_footer *)( context->buffer + context->eom );
 
+    footer->eod = 0;
+
     int16_t msg_crc = crc( &context->buffer[OPENTHINGS_CRC_START],
                            ( context->eom - OPENTHINGS_CRC_START ) + 1 );
 
-    footer->eod = 0;
     footer->crc_0 = BYTE_0( msg_crc );
     footer->crc_1 = BYTE_1( msg_crc );
 
@@ -185,17 +188,14 @@ bool openthings_open_message( struct openthings_messge_context *const context )
     struct openthings_message_header
         *header = (struct openthings_message_header *)context->buffer;
 
-    uint8_t payload_len = header->hdr_len + 1;
-
     struct openthings_message_footer
         *footer = (struct openthings_message_footer
-                       *)( ( context->buffer + payload_len ) -
-                           sizeof( struct openthings_message_footer ) );
+                       *)( ( context->buffer + header->hdr_len ) -
+                           sizeof( struct openthings_message_footer ) + 1 );
 
     int16_t calc_crc = crc(
         ( const uint8_t *const ) & context->buffer[OPENTHINGS_CRC_START],
-        payload_len - OPENTHINGS_CRC_START -
-            sizeof( struct openthings_message_footer ) );
+			((int)footer - (int)&context->buffer[OPENTHINGS_CRC_START]) + 1);
 
     int16_t exp_crc = ( ( ( (uint16_t)footer->crc_1 ) << 8 ) | footer->crc_0 );
 

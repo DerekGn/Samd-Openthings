@@ -132,7 +132,7 @@ void test_openthings_close_message(void)
         sizeof(struct openthings_message_footer) - 1,
         header->hdr_len);
 
-    TEST_ASSERT_EQUAL_HEX8(0xFD, footer->crc_1);
+    TEST_ASSERT_EQUAL_HEX8(0xFE, footer->crc_1);
 	TEST_ASSERT_EQUAL_HEX8(0x7F, footer->crc_0);
 }
 
