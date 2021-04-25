@@ -316,7 +316,7 @@ void openthings_decrypt_message(
  */
 void openthings_write_message_record_uint16(
     struct openthings_message_record *const record,
-    uint16_t value );
+    const uint16_t value );
 
 /**
  * \brief Write a uint32_t value to an open things message record
@@ -328,6 +328,6 @@ void openthings_write_message_record_uint16(
  */
 void openthings_write_message_record_uint32(
     struct openthings_message_record *const record,
- 	uint32_t value );
+ 	const uint32_t value );
 
 #endif /* OPENTHINGS_H_ */

@@ -47,13 +47,13 @@
 
 #define OPENTHINGS_CRC_START                                                   \
     5 /**< The offset from the start of the openthings header that the CRC is  \
-         calculated from */
+         \ calculated from */
 
 #define RECORD_SIZE( record )                                                  \
     sizeof( enum openthings_parameter ) +                                      \
         sizeof( union openthings_type_description ) +                          \
         record->description.len /**< A macro for calculating the total size of \
-                                    an openthings record.  */
+                                   \ an openthings record.  */
 
 static int16_t crc( const uint8_t const *buf, size_t size );
 
@@ -155,15 +155,17 @@ void openthings_decrypt_message(
 }
 /*-----------------------------------------------------------*/
 void openthings_write_message_record_uint16(
-    struct openthings_message_record *const record, uint16_t value )
+    struct openthings_message_record *const record, const uint16_t value )
 {
+	record->description.len = 2;
     record->data[0] = BYTE_1( value );
     record->data[1] = BYTE_0( value );
 }
 /*-----------------------------------------------------------*/
 void openthings_write_message_record_uint32(
-    struct openthings_message_record *const record, uint32_t value )
+    struct openthings_message_record *const record, const uint32_t value )
 {
+	record->description.len = 4;
     record->data[0] = BYTE_3( value );
     record->data[1] = BYTE_2( value );
     record->data[2] = BYTE_1( value );
