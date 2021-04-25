@@ -42,16 +42,18 @@
     ( ( uint8_t )( value >> 8 ) & 0xff ) /**< Mask byte 1 from a value. */
 #define BYTE_2( value )                                                        \
     ( ( uint8_t )( value >> 16 ) & 0xff ) /**< Mask byte 2 from a value. */
+#define BYTE_3( value )                                                        \
+    ( ( uint8_t )( value >> 24 ) & 0xff ) /**< Mask byte 3 from a value. */
 
 #define OPENTHINGS_CRC_START                                                   \
     5 /**< The offset from the start of the openthings header that the CRC is  \
-         \ \ \ calculated from */
+         calculated from */
 
 #define RECORD_SIZE( record )                                                  \
     sizeof( enum openthings_parameter ) +                                      \
         sizeof( union openthings_type_description ) +                          \
         record->description.len /**< A macro for calculating the total size of \
-                                   \ \ \ an openthings record.  */
+                                    an openthings record.  */
 
 static int16_t crc( const uint8_t const *buf, size_t size );
 
@@ -152,6 +154,22 @@ void openthings_decrypt_message(
     }
 }
 /*-----------------------------------------------------------*/
+void openthings_write_message_record_uint16(
+    struct openthings_message_record *const record, uint16_t value )
+{
+    record->data[0] = BYTE_1( value );
+    record->data[1] = BYTE_0( value );
+}
+/*-----------------------------------------------------------*/
+void openthings_write_message_record_uint32(
+    struct openthings_message_record *const record, uint32_t value )
+{
+    record->data[0] = BYTE_3( value );
+    record->data[1] = BYTE_2( value );
+    record->data[2] = BYTE_1( value );
+    record->data[3] = BYTE_0( value );
+}
+/*-----------------------------------------------------------*/
 void openthings_close_message( struct openthings_messge_context *const context )
 {
     struct openthings_message_header
@@ -195,7 +213,7 @@ bool openthings_open_message( struct openthings_messge_context *const context )
 
     int16_t calc_crc = crc(
         ( const uint8_t *const ) & context->buffer[OPENTHINGS_CRC_START],
-			((int)footer - (int)&context->buffer[OPENTHINGS_CRC_START]) + 1);
+        ( (int)footer - (int)&context->buffer[OPENTHINGS_CRC_START] ) + 1 );
 
     int16_t exp_crc = ( ( ( (uint16_t)footer->crc_1 ) << 8 ) | footer->crc_0 );
 

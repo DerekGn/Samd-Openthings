@@ -185,9 +185,9 @@ struct __CROSS_ATTR_PACKED openthings_message_record {
  * Represents an openthings record.
  */
 struct __CROSS_ATTR_PACKED openthings_message_footer {
-    uint8_t eod; /**< The end of message marker. */
+    uint8_t eod;   /**< The end of message marker. */
     uint8_t crc_1; /**< Byte 1 of the crc of the message. */
-	uint8_t crc_0; /**< Byte 0 of the crc of the message. */
+    uint8_t crc_0; /**< Byte 0 of the crc of the message. */
 };
 
 /**
@@ -305,4 +305,29 @@ void openthings_encrypt_message(
 void openthings_decrypt_message(
     struct openthings_messge_context *const context,
     const uint8_t encryption_id );
+
+/**
+ * \brief Write a uint16_t value to an open things message record
+ * 
+ * \param record The record to write the value too
+ * \param value The value to write
+ * 
+ * \return void
+ */
+void openthings_write_message_record_uint16(
+    struct openthings_message_record *const record,
+    uint16_t value );
+
+/**
+ * \brief Write a uint32_t value to an open things message record
+ * 
+ * \param record The record to write the value too
+ * \param value The value to write
+ * 
+ * \return void
+ */
+void openthings_write_message_record_uint32(
+    struct openthings_message_record *const record,
+ 	uint32_t value );
+
 #endif /* OPENTHINGS_H_ */
