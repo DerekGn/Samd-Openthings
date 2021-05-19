@@ -154,6 +154,13 @@ void openthings_decrypt_message(
     }
 }
 /*-----------------------------------------------------------*/
+void openthings_write_message_record_uint8(
+struct openthings_message_record *const record, const uint8_t value )
+{
+    record->description.len = 1;
+    record->data[0] = value;
+}
+/*-----------------------------------------------------------*/
 void openthings_write_message_record_uint16(
     struct openthings_message_record *const record, const uint16_t value )
 {

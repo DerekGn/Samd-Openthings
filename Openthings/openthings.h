@@ -307,6 +307,18 @@ void openthings_decrypt_message(
     const uint8_t encryption_id );
 
 /**
+ * \brief Write a uint8_t value to an open things message record
+ * 
+ * \param record The record to write the value too
+ * \param value The value to write
+ * 
+ * \return void
+ */
+void openthings_write_message_record_uint8(
+    struct openthings_message_record *const record,
+    const uint8_t value );
+
+/**
  * \brief Write a uint16_t value to an open things message record
  * 
  * \param record The record to write the value too
