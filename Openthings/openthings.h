@@ -39,6 +39,8 @@
 
 #include "crosscompile.h"
 
+#define OPENTHINGS_LIB_VERSION "1.0"
+
 #define OPENTHINGS_MAX_MSG_SIZE                                                \
     255 /**< The maximum size of an openthings message. */
 #define OPENTHINGS_MAX_REC_SIZE                                                \
