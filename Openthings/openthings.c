@@ -155,7 +155,7 @@ void openthings_decrypt_message(
 }
 /*-----------------------------------------------------------*/
 void openthings_write_message_record_uint8(
-struct openthings_message_record *const record, const uint8_t value )
+    struct openthings_message_record *const record, const uint8_t value )
 {
     record->description.len = 1;
     record->data[0] = value;
@@ -164,7 +164,7 @@ struct openthings_message_record *const record, const uint8_t value )
 void openthings_write_message_record_uint16(
     struct openthings_message_record *const record, const uint16_t value )
 {
-	record->description.len = 2;
+    record->description.len = 2;
     record->data[0] = BYTE_1( value );
     record->data[1] = BYTE_0( value );
 }
@@ -172,7 +172,7 @@ void openthings_write_message_record_uint16(
 void openthings_write_message_record_uint32(
     struct openthings_message_record *const record, const uint32_t value )
 {
-	record->description.len = 4;
+    record->description.len = 4;
     record->data[0] = BYTE_3( value );
     record->data[1] = BYTE_2( value );
     record->data[2] = BYTE_1( value );
@@ -208,28 +208,35 @@ void openthings_get_message_header(
             sizeof( struct openthings_message_header ) );
 }
 /*-----------------------------------------------------------*/
-bool openthings_open_message( struct openthings_messge_context *const context )
+enum openthings_status openthings_open_message(
+    struct openthings_messge_context *const context )
 {
-    bool result = false;
+    enum openthings_status result = STATUS_OK;
 
     struct openthings_message_header
         *header = (struct openthings_message_header *)context->buffer;
 
-    struct openthings_message_footer
-        *footer = (struct openthings_message_footer
-                       *)( ( context->buffer + header->hdr_len ) -
-                           sizeof( struct openthings_message_footer ) + 1 );
+    if ( header->hdr_len >= 10 && header->hdr_len < OPENTHINGS_MAX_MSG_SIZE ) {
+        struct openthings_message_footer
+            *footer = (struct openthings_message_footer
+                           *)( ( context->buffer + header->hdr_len ) -
+                               sizeof( struct openthings_message_footer ) + 1 );
 
-    int16_t calc_crc = crc(
-        ( const uint8_t *const ) & context->buffer[OPENTHINGS_CRC_START],
-        ( (int)footer - (int)&context->buffer[OPENTHINGS_CRC_START] ) + 1 );
+        int16_t calc_crc = crc(
+            ( const uint8_t *const ) & context->buffer[OPENTHINGS_CRC_START],
+            ( (int)footer - (int)&context->buffer[OPENTHINGS_CRC_START] ) + 1 );
 
-    int16_t exp_crc = ( ( ( (uint16_t)footer->crc_1 ) << 8 ) | footer->crc_0 );
+        int16_t exp_crc = ( ( ( (uint16_t)footer->crc_1 ) << 8 ) |
+                            footer->crc_0 );
+        if ( footer->eod == 0 && exp_crc == calc_crc ) {
+            context->eom = sizeof( struct openthings_message_header );
 
-    if ( footer->eod == 0 && exp_crc == calc_crc ) {
-        context->eom = sizeof( struct openthings_message_header );
-
-        result = true;
+            result = STATUS_OK;
+        } else {
+            result = STATUS_CRC_INVALID;
+        }
+    } else {
+        result = STATUS_HEADER_LEN;
     }
 
     return result;

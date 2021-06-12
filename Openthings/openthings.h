@@ -98,14 +98,24 @@ enum openthings_parameter {
     PHASE3_POWER = 0x7B,
     THREE_PHASE_TOTAL_POWER = 0x7C,
     VOC_INDEX = 0x7D,
-    PHASE_ANGLE = 0x7E,
-    ACTIVE_POWER = 0x7F,
-    FWD_ACTIVE_ENERGY = 0x80,
-    REV_ACTIVE_ENERGY = 0x81,
-    ABS_ACTIVE_ENERGY = 0x82,
-    FWD_REACTIVE_ENERGY = 0x83,
-    REV_REACTIVE_ENERGY = 0x84,
-    ABS_REACTIVE_ENERGY = 0x85
+    CURRENT_L = 0x7E,
+    PHASE_ANGLE_L = 0x7F,
+    ACTIVE_POWER_L = 0x80,
+    POWER_FACTOR_L = 0x81,
+    REACTIVE_POWER_L = 0x82,
+    APPARENT_POWER_L = 0x83,
+    CURRENT_N = 0x84,
+    PHASE_ANGLE_N = 0x85,
+    ACTIVE_POWER_N = 0x86,
+    POWER_FACTOR_N = 0x87,
+    REACTIVE_POWER_N = 0x88,
+    APPARENT_POWER_N = 0x89,
+    FWD_ACTIVE_ENERGY = 0x8A,
+    REV_ACTIVE_ENERGY = 0x8B,
+    ABS_ACTIVE_ENERGY = 0x8C,
+    FWD_REACTIVE_ENERGY = 0x8D,
+    REV_REACTIVE_ENERGY = 0x8E,
+    ABS_REACTIVE_ENERGY = 0x8F
 };
 
 /**
@@ -129,6 +139,15 @@ enum openthings_type {
     RESERVED1,
     RESERVED2,
     FLOATING_POINT = 0x0F
+};
+
+/**
+ * The message function status result
+ */
+enum openthings_status {
+    STATUS_OK,         /**< The operation succeeded */
+    STATUS_HEADER_LEN, /**< The operation failed due to invalid header length */
+    STATUS_CRC_INVALID /**< The operation failed due to invalid crc */
 };
 
 /**
@@ -235,10 +254,12 @@ void openthings_get_message_header(
  *
  * This function performs validation of the message structure
  *
- * \return bool	A return value of true indicates if the open succeeded i.e. the
- * integrity of the message is correct (CRC)
+ * \return enum openthings_open_status	A return value of true indicates if the
+ * open succeeded i.e. the integrity of the message is correct (CRC)
  */
-bool openthings_open_message( struct openthings_messge_context *const context );
+
+enum openthings_status openthings_open_message(
+    struct openthings_messge_context *const context );
 
 /**
  * \brief Initalise an openthings message
@@ -317,38 +338,35 @@ void openthings_decrypt_message(
 
 /**
  * \brief Write a uint8_t value to an open things message record
- * 
+ *
  * \param record The record to write the value too
  * \param value The value to write
- * 
+ *
  * \return void
  */
 void openthings_write_message_record_uint8(
-    struct openthings_message_record *const record,
-    const uint8_t value );
+    struct openthings_message_record *const record, const uint8_t value );
 
 /**
  * \brief Write a uint16_t value to an open things message record
- * 
+ *
  * \param record The record to write the value too
  * \param value The value to write
- * 
+ *
  * \return void
  */
 void openthings_write_message_record_uint16(
-    struct openthings_message_record *const record,
-    const uint16_t value );
+    struct openthings_message_record *const record, const uint16_t value );
 
 /**
  * \brief Write a uint32_t value to an open things message record
- * 
+ *
  * \param record The record to write the value too
  * \param value The value to write
- * 
+ *
  * \return void
  */
 void openthings_write_message_record_uint32(
-    struct openthings_message_record *const record,
- 	const uint32_t value );
+    struct openthings_message_record *const record, const uint32_t value );
 
 #endif /* OPENTHINGS_H_ */

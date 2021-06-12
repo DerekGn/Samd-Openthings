@@ -2,9 +2,9 @@
 #include "encrypt.c"
 #include "openthings.h"
 
-#define RECORD_SIZE( record )                                                  \
-    sizeof( enum openthings_parameter ) +                                      \
-        sizeof( union openthings_type_description ) + record.description.len
+#define RECORD_SIZE(record)             \
+    sizeof(enum openthings_parameter) + \
+        sizeof(union openthings_type_description) + record.description.len
 
 void setUp(void)
 {
@@ -15,7 +15,7 @@ void tearDown(void)
 }
 
 void write_test_record(
-    struct openthings_messge_context *const context )
+    struct openthings_messge_context *const context)
 {
     struct openthings_message_record record;
 
@@ -31,17 +31,17 @@ void write_test_record(
 void open_context_and_assert_test_record(
     struct openthings_messge_context *const context)
 {
-    if(openthings_open_message(context))
+    if (openthings_open_message(context) == STATUS_OK)
     {
         struct openthings_message_record record;
 
-        if(openthings_read_record(context, &record))
+        if (openthings_read_record(context, &record))
         {
             TEST_ASSERT_EQUAL_HEX8(ALARM, record.parameter);
         }
         else
         {
-            TEST_FAIL_MESSAGE("Record read failed");    
+            TEST_FAIL_MESSAGE("Record read failed");
         }
     }
     else
@@ -65,7 +65,7 @@ void test_openthings_init_message_header(void)
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
-    struct openthings_message_header *header = (struct openthings_message_header *) &context.buffer;
+    struct openthings_message_header *header = (struct openthings_message_header *)&context.buffer;
 
     TEST_ASSERT_EQUAL_HEX8(0xAA, header->manu_id);
     TEST_ASSERT_EQUAL_HEX8(0x55, header->prod_id);
@@ -120,7 +120,7 @@ void test_openthings_close_message(void)
 
     openthings_close_message(&context);
 
-    struct openthings_message_header *header = 
+    struct openthings_message_header *header =
         (struct openthings_message_header *)context.buffer;
 
     struct openthings_message_footer *footer =
@@ -128,12 +128,12 @@ void test_openthings_close_message(void)
 
     TEST_ASSERT_EQUAL_HEX8(
         sizeof(struct openthings_message_header) +
-        RECORD_SIZE(record) +
-        sizeof(struct openthings_message_footer) - 1,
+            RECORD_SIZE(record) +
+            sizeof(struct openthings_message_footer) - 1,
         header->hdr_len);
 
-    TEST_ASSERT_EQUAL_HEX8(0xFE, footer->crc_1);
-	TEST_ASSERT_EQUAL_HEX8(0x7F, footer->crc_0);
+    TEST_ASSERT_EQUAL_HEX8(0xF8, footer->crc_1);
+    TEST_ASSERT_EQUAL_HEX8(0x7F, footer->crc_0);
 }
 
 void test_openthings_open_message(void)
@@ -146,7 +146,7 @@ void test_openthings_open_message(void)
 
     openthings_close_message(&context);
 
-    TEST_ASSERT_EQUAL_HEX8(1, openthings_open_message(&context));
+    TEST_ASSERT_EQUAL_HEX8(STATUS_OK, openthings_open_message(&context));
 }
 
 void test_openthings_read_record(void)
@@ -196,4 +196,19 @@ void test_openthings_encrypt_decrypt()
     openthings_decrypt_message(&context, 10);
 
     open_context_and_assert_test_record(&context);
+}
+
+void test_openthings_random_payload()
+{
+    struct openthings_messge_context context = {
+        {0x03, 0xd3, 0x92, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+         0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+         0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+         0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+         0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+         0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x00, 0x00},
+        0};
+
+    TEST_ASSERT_EQUAL_HEX8(1, openthings_open_message(&context));
 }
