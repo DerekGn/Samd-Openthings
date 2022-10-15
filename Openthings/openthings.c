@@ -33,6 +33,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <math.h>
+
 #include "openthings.h"
 #include "encrypt.h"
 
@@ -47,7 +49,7 @@
 
 #define OPENTHINGS_CRC_START                                                   \
     5 /**< The offset from the start of the openthings header that the CRC is  \
-         \ calculated from */
+        \ calculated from */
 
 #define RECORD_SIZE( record )                                                  \
     sizeof( enum openthings_parameter ) +                                      \
@@ -57,7 +59,10 @@
 
 static int16_t crc( const uint8_t const *buf, size_t size );
 
+static int32_t get_encoding_bits( enum openthings_float_encoding encoding );
+
 /*-----------------------------------------------------------*/
+
 void openthings_init_message( struct openthings_messge_context *const context,
                               const uint8_t manufacturer_id,
                               const uint8_t product_id,
@@ -78,7 +83,9 @@ void openthings_init_message( struct openthings_messge_context *const context,
 
     context->eom += sizeof( struct openthings_message_header );
 }
+
 /*-----------------------------------------------------------*/
+
 bool openthings_write_record( struct openthings_messge_context *const context,
                               struct openthings_message_record *const record )
 {
@@ -94,7 +101,9 @@ bool openthings_write_record( struct openthings_messge_context *const context,
 
     return false;
 }
+
 /*-----------------------------------------------------------*/
+
 bool openthings_read_record( struct openthings_messge_context *const context,
                              const struct openthings_message_record *record )
 {
@@ -111,7 +120,9 @@ bool openthings_read_record( struct openthings_messge_context *const context,
 
     return false;
 }
+
 /*-----------------------------------------------------------*/
+
 void openthings_encrypt_message(
     struct openthings_messge_context *const context,
     const uint8_t encryption_id, const uint16_t noise )
@@ -132,7 +143,9 @@ void openthings_encrypt_message(
         context->buffer[i] = encrypt_decrypt( context->buffer[i] );
     }
 }
+
 /*-----------------------------------------------------------*/
+
 void openthings_decrypt_message(
     struct openthings_messge_context *const context,
     const uint8_t encryption_id )
@@ -153,32 +166,159 @@ void openthings_decrypt_message(
         }
     }
 }
+
 /*-----------------------------------------------------------*/
-void openthings_write_message_record_uint8(
-    struct openthings_message_record *const record, const uint8_t value )
+
+enum openthings_encode_record_status openthings_encode_record_message_float(
+    struct openthings_message_record *const record,
+    enum openthings_float_encoding encoding, const float value )
 {
-    record->description.len = 1;
-    record->data[0] = value;
+    enum openthings_encode_record_status result;
+    double encode = value;
+    int32_t encoded;
+    uint32_t len = 0;
+
+    switch ( encoding ) {
+        case FLOAT_ENCODING_UNSIGNEDX4:
+        case FLOAT_ENCODING_UNSIGNEDX8:
+        case FLOAT_ENCODING_UNSIGNEDX12:
+        case FLOAT_ENCODING_UNSIGNEDX16:
+        case FLOAT_ENCODING_UNSIGNEDX20:
+        case FLOAT_ENCODING_UNSIGNEDX24:
+            if ( value < 0 ) {
+                result = ENCODING_FAIL_OUTRANGE;
+            } else {
+                encode *= pow( 2, get_encoding_bits( encoding ) );
+                encode = round( encode );
+                encoded = encode;
+
+                uint32_t shift = 24;
+
+                for ( uint32_t i = 0; i < 4; i++ ) {
+                    uint8_t v = ( encoded >> shift ) & 0xFF;
+                    shift -= 8;
+
+                    if ( v ) {
+                        record->data[len++] = v;
+                    }
+                }
+
+                record->description.len = len;
+                record->description.type = encoding;
+
+                result = ENCODING_OK;
+            }
+            break;
+        case FLOAT_ENCODING_SIGNEDX8:
+        case FLOAT_ENCODING_SIGNEDX12:
+        case FLOAT_ENCODING_SIGNEDX16:
+        case FLOAT_ENCODING_SIGNEDX24:
+
+            break;
+        case FLOAT_ENCODING_FLOATING_POINT:
+            break;
+        default:
+            break;
+    }
+
+    return result;
 }
+
 /*-----------------------------------------------------------*/
-void openthings_write_message_record_uint16(
-    struct openthings_message_record *const record, const uint16_t value )
+
+enum openthings_encode_record_status openthings_encode_record_message_int(
+    struct openthings_message_record *const record, const int32_t *const value,
+    const size_t len )
 {
-    record->description.len = 2;
-    record->data[0] = BYTE_1( value );
-    record->data[1] = BYTE_0( value );
+    enum openthings_encode_record_status result;
+
+    if ( len <= sizeof( int32_t ) ) {
+        record->description.len = len;
+        record->description.type = SIGNEDX0;
+        result = ENCODING_OK;
+        switch ( len ) {
+            case 1:
+                record->data[0] = BYTE_0( *value );
+                break;
+            case 2:
+                record->data[0] = BYTE_1( *value );
+                record->data[1] = BYTE_0( *value );
+                break;
+            case 4:
+                record->data[0] = BYTE_3( *value );
+                record->data[1] = BYTE_2( *value );
+                record->data[2] = BYTE_1( *value );
+                record->data[3] = BYTE_0( *value );
+                break;
+            default:
+                result = ENCODING_FAIL_SIZE;
+                break;
+        }
+    } else {
+        result = ENCODING_FAIL_SIZE;
+    }
+
+    return result;
 }
+
 /*-----------------------------------------------------------*/
-void openthings_write_message_record_uint32(
-    struct openthings_message_record *const record, const uint32_t value )
+
+enum openthings_encode_record_status openthings_encode_record_message_string(
+    struct openthings_message_record *const record, const char *string )
 {
-    record->description.len = 4;
-    record->data[0] = BYTE_3( value );
-    record->data[1] = BYTE_2( value );
-    record->data[2] = BYTE_1( value );
-    record->data[3] = BYTE_0( value );
+    enum openthings_encode_record_status result;
+    size_t len = strlen( string );
+
+    if ( len < OPENTHINGS_MAX_REC_SIZE ) {
+        record->description.len = len;
+        record->description.type = CHARS;
+        strcpy( record->data, string );
+    } else {
+        result = ENCODING_FAIL_SIZE;
+    }
+
+    return result;
 }
+
 /*-----------------------------------------------------------*/
+
+enum openthings_encode_record_status openthings_encode_record_message_uint(
+    struct openthings_message_record *const record, const uint32_t *const value,
+    const size_t len )
+{
+    enum openthings_encode_record_status result;
+
+    if ( len <= sizeof( uint32_t ) ) {
+        record->description.len = len;
+        record->description.type = UNSIGNEDX0;
+        result = ENCODING_OK;
+        switch ( len ) {
+            case 1:
+                record->data[0] = BYTE_0( *value );
+                break;
+            case 2:
+                record->data[0] = BYTE_1( *value );
+                record->data[1] = BYTE_0( *value );
+                break;
+            case 4:
+                record->data[0] = BYTE_3( *value );
+                record->data[1] = BYTE_2( *value );
+                record->data[2] = BYTE_1( *value );
+                record->data[3] = BYTE_0( *value );
+                break;
+            default:
+                result = ENCODING_FAIL_SIZE;
+                break;
+        }
+    } else {
+        result = ENCODING_FAIL_SIZE;
+    }
+
+    return result;
+}
+
+/*-----------------------------------------------------------*/
+
 void openthings_close_message( struct openthings_messge_context *const context )
 {
     struct openthings_message_header
@@ -199,7 +339,9 @@ void openthings_close_message( struct openthings_messge_context *const context )
 
     header->hdr_len = context->eom - 1;
 }
+
 /*-----------------------------------------------------------*/
+
 void openthings_get_message_header(
     struct openthings_messge_context *const context,
     struct openthings_message_header *const header )
@@ -207,7 +349,9 @@ void openthings_get_message_header(
     memcpy( header, context->buffer,
             sizeof( struct openthings_message_header ) );
 }
+
 /*-----------------------------------------------------------*/
+
 enum openthings_status openthings_open_message(
     struct openthings_messge_context *const context )
 {
@@ -241,7 +385,9 @@ enum openthings_status openthings_open_message(
 
     return result;
 }
+
 /*-----------------------------------------------------------*/
+
 static int16_t crc( const uint8_t const *buf, size_t size )
 {
     uint16_t rem = 0;
@@ -255,4 +401,41 @@ static int16_t crc( const uint8_t const *buf, size_t size )
     }
     return rem;
 }
+
 /*-----------------------------------------------------------*/
+
+int32_t get_encoding_bits( enum openthings_float_encoding encoding )
+{
+    uint32_t result = 0;
+
+    switch ( encoding ) {
+        case FLOAT_ENCODING_UNSIGNEDX4:
+            result = 4;
+            break;
+        case FLOAT_ENCODING_UNSIGNEDX8:
+        case FLOAT_ENCODING_SIGNEDX8:
+            result = 8;
+            break;
+        case FLOAT_ENCODING_UNSIGNEDX12:
+        case FLOAT_ENCODING_SIGNEDX12:
+            result = 12;
+            break;
+        case FLOAT_ENCODING_UNSIGNEDX16:
+        case FLOAT_ENCODING_SIGNEDX16:
+            result = 16;
+            break;
+        case FLOAT_ENCODING_UNSIGNEDX20:
+            result = 20;
+            break;
+        case FLOAT_ENCODING_UNSIGNEDX24:
+        case FLOAT_ENCODING_SIGNEDX24:
+            result = 24;
+            break;
+        case FLOAT_ENCODING_FLOATING_POINT:
+            break;
+        default:
+            break;
+    }
+
+    return result;
+}

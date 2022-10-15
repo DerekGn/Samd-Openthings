@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "unity.h"
 #include "encrypt.c"
 #include "openthings.h"
@@ -5,6 +7,8 @@
 #define RECORD_SIZE(record)             \
     sizeof(enum openthings_parameter) + \
         sizeof(union openthings_type_description) + record.description.len
+
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
 
 void setUp(void)
 {
@@ -132,7 +136,7 @@ void test_openthings_close_message(void)
             sizeof(struct openthings_message_footer) - 1,
         header->hdr_len);
 
-    TEST_ASSERT_EQUAL_HEX8(0xF8, footer->crc_1);
+    TEST_ASSERT_EQUAL_HEX8(0xFC, footer->crc_1);
     TEST_ASSERT_EQUAL_HEX8(0x7F, footer->crc_0);
 }
 
@@ -211,4 +215,220 @@ void test_openthings_random_payload()
         0};
 
     TEST_ASSERT_EQUAL_HEX8(1, openthings_open_message(&context));
+}
+
+void test_openthings_encode_record_message_float_invalid_unsigned_x4()
+{
+    struct openthings_message_record record;
+    
+    enum openthings_encode_record_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX4, -1.0);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_OUTRANGE, status);
+}
+
+void test_openthings_encode_record_message_float_invalid_unsigned_x8()
+{
+    struct openthings_message_record record;
+    
+    enum openthings_encode_record_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX8, -1.0);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_OUTRANGE, status);
+}
+
+void test_openthings_encode_record_message_float_invalid_unsigned_x16()
+{
+    struct openthings_message_record record;
+    
+    enum openthings_encode_record_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX16, -1.0);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_OUTRANGE, status);
+}
+
+void test_openthings_encode_record_message_float_invalid_unsigned_x20()
+{
+    struct openthings_message_record record;
+    
+    enum openthings_encode_record_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX20, -1.0);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_OUTRANGE, status);
+}
+
+void test_openthings_encode_record_message_float_invalid_unsigned_x24()
+{
+    struct openthings_message_record record;
+    
+    enum openthings_encode_record_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX24, -1.0);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_OUTRANGE, status);
+}
+
+void test_openthings_encode_record_message_float_unsigned_x4()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0x12};
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX4, 1.12345);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX4, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, 1);
+}
+
+void test_openthings_encode_record_message_float_unsigned_x8()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0x12, 0x2};
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX8, 1.12345678);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX8, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, 1);
+}
+
+void test_openthings_encode_record_message_int_invalid_size_greater_than()
+{
+    struct openthings_message_record record;
+    int8_t value = 0xFF;
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_int(&record, (const int32_t *const)&value, 5);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_SIZE, status);
+}
+
+void test_openthings_encode_record_message_int_invalid_size()
+{
+    struct openthings_message_record record;
+    
+    enum openthings_encode_record_status status = openthings_encode_record_message_int(&record, 0, 3);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_SIZE, status);
+}
+
+void test_openthings_encode_record_message_int_byte()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0xFF};
+    int8_t value = 0xFF;
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_int(&record, (const int32_t *const)&value, sizeof(int8_t));
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(SIGNEDX0, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, sizeof(int8_t));
+}
+
+void test_openthings_encode_record_message_int_short()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0xAA, 0x55};
+    int16_t value = 0xAA55;
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_int(&record, (const int32_t *const)&value, sizeof(int16_t));
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(SIGNEDX0, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, sizeof(int16_t));
+}
+
+void test_openthings_encode_record_message_int()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0xAA, 0x55, 0xFE, 0xED};
+    int32_t value = 0xAA55FEED;
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_int(&record, &value, sizeof(int32_t));
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(SIGNEDX0, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, sizeof(int32_t));
+}
+
+void test_openthings_encode_record_message_string_too_long()
+{
+    struct openthings_message_record record;
+    char string[] = "XXXXXXXXXXXXXXXXXXXX";
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_string(&record, string);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_SIZE, status);
+}
+
+void test_openthings_encode_record_message_string_ok()
+{
+    struct openthings_message_record record;
+    char string[] = "TEST";
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_string(&record, string);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(4, record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(CHARS, record.description.type);
+    TEST_ASSERT_EQUAL_STRING("TEST", record.data );
+}
+
+void test_openthings_encode_record_message_uint_invalid_size_greater_than()
+{
+    struct openthings_message_record record;
+    int8_t value = 0xFF;
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_int(&record, (const int32_t *const)&value, 5);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_SIZE, status);
+}
+
+void test_openthings_encode_record_message_uint_invalid_size()
+{
+    struct openthings_message_record record;
+    
+    enum openthings_encode_record_status status = openthings_encode_record_message_int(&record, 0, 3);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_SIZE, status);
+}
+
+void test_openthings_encode_record_message_uint_byte()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0xFF};
+    uint8_t value = 0xFF;
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_uint(&record, (const uint32_t *const)&value, sizeof(uint8_t));
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX0, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, sizeof(uint8_t));
+}
+
+void test_openthings_encode_record_message_uint_short()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0xAA, 0x55};
+    uint16_t value = 0xAA55;
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_uint(&record, (const uint32_t *const)&value, sizeof(uint16_t));
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX0, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, sizeof(uint16_t));
+}
+
+void test_openthings_encode_record_message_uint()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0xAA, 0x55, 0xFE, 0xED};
+    uint32_t value = 0xAA55FEED;
+
+    enum openthings_encode_record_status status = openthings_encode_record_message_uint(&record, &value, sizeof(uint32_t));
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX0, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, sizeof(uint32_t));
 }
