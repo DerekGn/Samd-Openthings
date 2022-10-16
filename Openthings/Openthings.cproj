@@ -145,6 +145,21 @@
     <Compile Include="crosscompile.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="openthings_common.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_decode.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_decode.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_encoding.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_encoding.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="encrypt.c">
       <SubType>compile</SubType>
     </Compile>

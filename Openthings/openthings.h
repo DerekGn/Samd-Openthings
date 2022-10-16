@@ -125,40 +125,22 @@ enum openthings_parameter {
  * The list of types supported.
  */
 enum openthings_type {
-    UNSIGNEDX0,
-    UNSIGNEDX4,
-    UNSIGNEDX8,
-    UNSIGNEDX12,
-    UNSIGNEDX16,
-    UNSIGNEDX20,
-    UNSIGNEDX24,
-    CHARS,
-    SIGNEDX0,
-    SIGNEDX8,
-    SIGNEDX12,
-    SIGNEDX16,
-    SIGNEDX24,
-    ENUMERATION,
-    RESERVED1,
-    RESERVED2,
+    UNSIGNEDX0 = 0x00,
+    UNSIGNEDX4 = 0x01,
+    UNSIGNEDX8 = 0x02,
+    UNSIGNEDX12 = 0x03,
+    UNSIGNEDX16 = 0x04,
+    UNSIGNEDX20 = 0x05,
+    UNSIGNEDX24 = 0x06,
+    CHARS = 0x07,
+    SIGNEDX0 =0x08,
+    SIGNEDX8 =0x09,
+    SIGNEDX16 =0x0A,
+    SIGNEDX24 =0x0B,
+    ENUMERATION =0x0C,
+    RESERVED1 =0x0D,
+    RESERVED2 =0x0E,
     FLOATING_POINT = 0x0F
-};
-
-/**
- * The list of float encoding values
- */
-enum openthings_float_encoding {
-    FLOAT_ENCODING_UNSIGNEDX4 = 0x1,
-    FLOAT_ENCODING_UNSIGNEDX8 = 0x2,
-    FLOAT_ENCODING_UNSIGNEDX12 = 0x03,
-    FLOAT_ENCODING_UNSIGNEDX16 = 0x04,
-    FLOAT_ENCODING_UNSIGNEDX20 = 0x05,
-    FLOAT_ENCODING_UNSIGNEDX24 = 0x06,
-    FLOAT_ENCODING_SIGNEDX8 = 0x08,
-    FLOAT_ENCODING_SIGNEDX12 = 0x09,
-    FLOAT_ENCODING_SIGNEDX16 = 0x0A,
-    FLOAT_ENCODING_SIGNEDX24 = 0x0B,
-    FLOAT_ENCODING_FLOATING_POINT = 0x0F
 };
 
 /**
@@ -168,17 +150,6 @@ enum openthings_status {
     STATUS_OK,         /**< The operation succeeded */
     STATUS_HEADER_LEN, /**< The operation failed due to invalid header length */
     STATUS_CRC_INVALID /**< The operation failed due to invalid crc */
-};
-
-/**
- * The encoding operation status
- */
-enum openthings_encode_record_status {
-    ENCODING_OK,        /**< The operation succeeded */
-    ENCODING_FAIL_SIZE, /**< The operation failed to encode the data due to size
-                           constraints */
-    ENCODING_FAIL_OUTRANGE /**< The operation failed to encode as the value to
-                              encode is out of range */
 };
 
 /**
@@ -366,70 +337,5 @@ void openthings_encrypt_message(
 void openthings_decrypt_message(
     struct openthings_messge_context *const context,
     const uint8_t encryption_id );
-
-///**
-//* \brief
-//*
-//* \param record
-//* \param value
-//*
-//* \return enum openthings_encode_record_status
-//*/
-// enum openthings_encode_record_status openthings_encode_record_message_enum(
-// const struct openthings_message_record *record, const uint32_t *value );
-
-/**
- * \brief
- *
- * \param record
- * \param encoding
- * \param value
- *
- * \return enum openthings_encode_record_status
- */
-enum openthings_encode_record_status openthings_encode_record_message_float(
-    struct openthings_message_record *const record,
-    enum openthings_float_encoding encoding, const float value );
-
-/**
- * \brief Encode an signed int value to the message record. It is assumed that
- * the max integer size is 4 bytes long on 32 bit cpu
- *
- * \param[in] record The record to write the signed int too.
- * \param[in] value The signed int value
- * \param[in] len The length in bytes too encode the signed int
- *
- * \return enum openthings_encode_record_status The status of the encoding
- * operation
- */
-enum openthings_encode_record_status openthings_encode_record_message_int(
-    struct openthings_message_record *const record, const int32_t *const value,
-    const size_t len );
-
-/**
- * \brief Encode the contents of a string to the message record.
- *
- * \param[in] record The record to write the string too.
- * \param[in] string The string to write
- *
- * \return enum openthings_encode_record_status Status of the encoding operation
- */
-enum openthings_encode_record_status openthings_encode_record_message_string(
-    struct openthings_message_record *const record, const char *string );
-
-/**
- * \brief Encode an unsigned int value to the message record. It is assumed that
- * the max integer size is 4 bytes long on 32 bit cpu
- *
- * \param[in] record The record to write the unsigned int too.
- * \param[in] value The unsigned int value
- * \param[in] len The length in bytes too encode the unsigned int
- *
- * \return enum openthings_encode_record_status The status of the encoding
- * operation
- */
-enum openthings_encode_record_status openthings_encode_record_message_uint(
-    struct openthings_message_record *const record, const uint32_t *const value,
-    const size_t len );
 
 #endif /* OPENTHINGS_H_ */
