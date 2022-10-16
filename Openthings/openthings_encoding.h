@@ -63,23 +63,12 @@ enum openthings_encoding_status {
                               encode is out of range */
 };
 
-///**
-//* \brief
-//*
-//* \param record
-//* \param value
-//*
-//* \return enum openthings_encode_record_status
-//*/
-// enum openthings_encode_record_status openthings_encode_record_message_enum(
-// const struct openthings_message_record *record, const uint32_t *value );
-
 /**
- * \brief
+ * \brief Encode a float value to a fixed point signed integer value
  *
- * \param record
- * \param encoding
- * \param value
+ * \param record The record to write the signed int too.
+ * \param encoding The encoding to use
+ * \param value The float value to encode
  *
  * \return enum openthings_encode_record_status
  */

@@ -148,10 +148,10 @@
     <Compile Include="openthings_common.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="openthings_decode.c">
+    <Compile Include="openthings_decoding.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="openthings_decode.h">
+    <Compile Include="openthings_decoding.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="openthings_encoding.c">
