@@ -88,8 +88,7 @@ enum openthings_encoding_status openthings_encode_record_message_float(
  * operation
  */
 enum openthings_encoding_status openthings_encode_record_message_int(
-    struct openthings_message_record *const record, const int32_t *const value,
-    const size_t len );
+    struct openthings_message_record *const record, const int32_t value );
 
 /**
  * \brief Encode the contents of a string to the message record.
@@ -114,7 +113,6 @@ enum openthings_encoding_status openthings_encode_record_message_string(
  * operation
  */
 enum openthings_encoding_status openthings_encode_record_message_uint(
-    struct openthings_message_record *const record, const uint32_t *const value,
-    const size_t len );
+    struct openthings_message_record *const record, const uint32_t value );
 
 #endif /* ENCODING_H_ */

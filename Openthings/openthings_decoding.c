@@ -54,11 +54,15 @@ enum openthings_decoding_status openthings_decode_record_message_float(
         uint32_t unpacked = openthings_unpack_uint( record->data,
                                                     record->description.len );
         if ( openthings_float_encoded_signed( record->description.type ) ) {
-            int32_t s;
+            int32_t s = unpacked;
+
             if ( ( record->data[0] & 0x80 ) ) {
-                s = -( ( ( !unpacked ) &
-                         ( ( 2 ^ ( record->description.len * 8 ) ) - 1 ) ) +
-                       1 );
+                uint32_t onescomp = ( ~unpacked ) &
+                                    ( uint32_t )(
+                                        pow( 2,
+                                             ( record->description.len * 8 ) ) -
+                                        1 );
+                s = -( onescomp + 1 );
             }
 
             *value = (float)s / pow( 2, openthings_get_type_bits(
@@ -142,6 +146,8 @@ static bool openthings_float_encoded( enum openthings_type type )
         case SIGNEDX8:
         case SIGNEDX16:
         case SIGNEDX24:
+            result = true;
+            break;
         case ENUMERATION:
             break;
         case RESERVED1:
@@ -249,7 +255,7 @@ static bool openthings_float_encoded_signed( enum openthings_type type )
 
 static uint32_t openthings_unpack_uint( uint8_t *const data, uint32_t len )
 {
-    uint32_t result;
+    uint32_t result = 0;
 
     for ( uint32_t i = 0; i < len; i++ ) {
         result <<= 8;

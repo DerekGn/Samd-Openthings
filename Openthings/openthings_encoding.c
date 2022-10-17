@@ -43,9 +43,13 @@
 static uint32_t get_encoding_bits( enum openthings_float_encoding encoding );
 
 static int32_t encode_float_to_int( enum openthings_float_encoding encoding,
-const float value );
+                                    const float value );
 
-static uint32_t pack_int_to_array( uint8_t *const data, int32_t value );
+static size_t pack_int_to_array( uint8_t *const data, int64_t value );
+
+static uint32_t get_highest_clear_bit( const int64_t value );
+
+static uint32_t get_value_bits( int64_t value );
 
 /*-----------------------------------------------------------*/
 enum openthings_encoding_status openthings_encode_record_message_float(
@@ -53,7 +57,7 @@ enum openthings_encoding_status openthings_encode_record_message_float(
     enum openthings_float_encoding encoding, const float value )
 {
     enum openthings_encoding_status result;
-    int32_t encoded;
+    int32_t encoded = 0;
     uint32_t len = 0;
 
     switch ( encoding ) {
@@ -80,16 +84,16 @@ enum openthings_encoding_status openthings_encode_record_message_float(
         case FLOAT_ENCODING_SIGNEDX16:
         case FLOAT_ENCODING_SIGNEDX24:
             encoded = encode_float_to_int( encoding, value );
-
+                
             if(value < 0)
             {
                  int32_t bits = get_encoding_bits(encoding);
-                 
+                
                  bits = ((((float)bits-1)/8)+1)*8;
-                 
+
                  encoded &= (uint32_t)pow(2,bits)-1;
             }
-            
+
             len = pack_int_to_array( record->data, encoded );
 
             record->description.len = len;
@@ -113,40 +117,26 @@ enum openthings_encoding_status openthings_encode_record_message_float(
 }
 
 /*-----------------------------------------------------------*/
-
 enum openthings_encoding_status openthings_encode_record_message_int(
-    struct openthings_message_record *const record, const int32_t *const value,
-    const size_t len )
+    struct openthings_message_record *const record, const int32_t value )
 {
-    enum openthings_encoding_status result;
+    if ( value < 0 ) {
+        int64_t encoded = value;
+        
+        uint32_t bits = get_value_bits( value );
 
-    if ( len <= sizeof( int32_t ) ) {
-        record->description.len = len;
+        bits = ( ( ( (float)bits - 1 ) / 8 ) + 1 ) * 8;
+
+        encoded &= (int64_t)pow( 2, bits ) - 1;
+        
+        record->description.len = pack_int_to_array( record->data, encoded );
         record->description.type = SIGNEDX0;
-        result = ENCODING_OK;
-        switch ( len ) {
-            case 1:
-                record->data[0] = BYTE_0( *value );
-                break;
-            case 2:
-                record->data[0] = BYTE_1( *value );
-                record->data[1] = BYTE_0( *value );
-                break;
-            case 4:
-                record->data[0] = BYTE_3( *value );
-                record->data[1] = BYTE_2( *value );
-                record->data[2] = BYTE_1( *value );
-                record->data[3] = BYTE_0( *value );
-                break;
-            default:
-                result = ENCODING_FAIL_SIZE;
-                break;
-        }
     } else {
-        result = ENCODING_FAIL_SIZE;
+        record->description.len = pack_int_to_array( record->data, value );
+        record->description.type = SIGNEDX0;
     }
 
-    return result;
+    return ENCODING_OK;
 }
 
 /*-----------------------------------------------------------*/
@@ -171,38 +161,12 @@ enum openthings_encoding_status openthings_encode_record_message_string(
 /*-----------------------------------------------------------*/
 
 enum openthings_encoding_status openthings_encode_record_message_uint(
-    struct openthings_message_record *const record, const uint32_t *const value,
-    const size_t len )
+    struct openthings_message_record *const record, const uint32_t value )
 {
-    enum openthings_encoding_status result;
+    record->description.len = pack_int_to_array( record->data, value );
+    record->description.type = UNSIGNEDX0;
 
-    if ( len <= sizeof( uint32_t ) ) {
-        record->description.len = len;
-        record->description.type = UNSIGNEDX0;
-        result = ENCODING_OK;
-        switch ( len ) {
-            case 1:
-                record->data[0] = BYTE_0( *value );
-                break;
-            case 2:
-                record->data[0] = BYTE_1( *value );
-                record->data[1] = BYTE_0( *value );
-                break;
-            case 4:
-                record->data[0] = BYTE_3( *value );
-                record->data[1] = BYTE_2( *value );
-                record->data[2] = BYTE_1( *value );
-                record->data[3] = BYTE_0( *value );
-                break;
-            default:
-                result = ENCODING_FAIL_SIZE;
-                break;
-        }
-    } else {
-        result = ENCODING_FAIL_SIZE;
-    }
-
-    return result;
+    return ENCODING_OK;
 }
 
 /*-----------------------------------------------------------*/
@@ -248,7 +212,7 @@ int32_t encode_float_to_int( enum openthings_float_encoding encoding,
                              const float value )
 {
     double encode = value;
-    int32_t encoded;
+    int32_t encoded = 0;
 
     encode *= pow( 2, get_encoding_bits( encoding ) );
     encode = round( encode );
@@ -259,16 +223,16 @@ int32_t encode_float_to_int( enum openthings_float_encoding encoding,
 
 /*-----------------------------------------------------------*/
 
-uint32_t pack_int_to_array( uint8_t *const data, int32_t value )
+size_t pack_int_to_array( uint8_t *const data, int64_t value )
 {
-    uint32_t shift = 24;
-    uint32_t len = 0;
+    uint64_t shift = 56;
+    size_t len = 0;
 
-    for ( uint32_t i = 0; i < 4; i++ ) {
+    for ( uint32_t i = 0; i < sizeof( int64_t ); i++ ) {
         uint8_t v = ( value >> shift ) & 0xFF;
         shift -= 8;
 
-        if ( v ) {
+        if ( v || len > 0 ) {
             data[len++] = v;
         }
     }
@@ -277,3 +241,29 @@ uint32_t pack_int_to_array( uint8_t *const data, int32_t value )
 }
 
 /*-----------------------------------------------------------*/
+
+static uint32_t get_value_bits( int64_t value )
+{
+    if ( value == -1 ) {
+        return 2;
+    } else {
+        return get_highest_clear_bit( value ) + 2;
+    }
+}
+
+static uint32_t get_highest_clear_bit( const int64_t value )
+{
+    uint64_t mask = 0x8000000000000000;
+    uint32_t bit_num = 63;
+
+    do {
+        if ( ( value & mask ) == 0 ) {
+            break;
+        }
+
+        mask >>= 1;
+        bit_num--;
+    } while ( mask );
+
+    return bit_num;
+}

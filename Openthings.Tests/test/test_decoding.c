@@ -20,7 +20,7 @@ void test_openthings_decode_record_message_float_invalid_type()
     TEST_ASSERT_EQUAL_HEX8(DECODING_INVALID_TYPE, status);
 }
 
-void test_openthings_decode_record_message_float()
+void test_openthings_decode_record_message_float_unsigned_x4()
 {
     struct openthings_message_record record;
     record.description.type = UNSIGNEDX4;
@@ -32,6 +32,180 @@ void test_openthings_decode_record_message_float()
 
     TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
     TEST_ASSERT_EQUAL_FLOAT(1.125, value);
+}
+
+void test_openthings_decode_record_message_float_unsigned_x8()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX8;
+    record.description.len = 2;
+    record.data[0] = 0x01;
+    record.data[1] = 0x55;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.33203125, value);
+}
+
+void test_openthings_decode_record_message_float_unsigned_x12()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX12;
+    record.description.len = 2;
+    record.data[0] = 0x11;
+    record.data[1] = 0xFA;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.12353515625, value);
+}
+
+void test_openthings_decode_record_message_float_unsigned_x16()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX16;
+    record.description.len = 3;
+    record.data[0] = 0x01;
+    record.data[1] = 0x1F;
+    record.data[2] = 0x9B;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.1234588623046875, value);
+}
+
+void test_openthings_decode_record_message_float_unsigned_x20()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX20;
+    record.description.len = 3;
+    record.data[0] = 0x11;
+    record.data[1] = 0xF9;
+    record.data[2] = 0xAE;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.1234569549560547, value);
+}
+
+void test_openthings_decode_record_message_float_unsigned_x24()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX24;
+    record.description.len = 4;
+    record.data[0] = 0x01;
+    record.data[1] = 0x1F;
+    record.data[2] = 0x9A;
+    record.data[3] = 0xDE;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.1234567761421204, value);
+}
+void test_openthings_decode_record_message_float_signed_x8_pos_value()
+{
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX8;
+    record.description.len = 2;
+    record.data[0] = 0x01;
+    record.data[1] = 0x20;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.125, value);
+}
+
+void test_openthings_decode_record_message_float_signed_x16_pos_value()
+{
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX16;
+    record.description.len = 3;
+    record.data[0] = 0x01;
+    record.data[1] = 0x1F;
+    record.data[2] = 0x9b;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.1234588623046875, value);
+}
+
+void test_openthings_decode_record_message_float_signed_x24_pos_value()
+{
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX24;
+    record.description.len = 4;
+    record.data[0] = 0x01;
+    record.data[1] = 0x1F;
+    record.data[2] = 0x9A;
+    record.data[3] = 0xDD;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.1234567761421204, value);
+}
+
+void test_openthings_decode_record_message_float_signed_x8_neg_value()
+{
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX8;
+    record.description.len = 2;
+    record.data[0] = 0xFE;
+    record.data[1] = 0xE0;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(-1.123457, value);
+}
+
+void test_openthings_decode_record_message_float_signed_x16_neg_value()
+{
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX16;
+    record.description.len = 3;
+    record.data[0] = 0x7E;
+    record.data[1] = 0xE0;
+    record.data[1] = 0x65;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(-1.123457, value);
+}
+
+void test_openthings_decode_record_message_float_signed_x24_neg_value()
+{
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX24;
+    record.description.len = 4;
+    record.data[0] = 0x7E;
+    record.data[1] = 0xE0;
+    record.data[1] = 0x65;
+    record.data[1] = 0x35;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(-1.123457, value);
 }
 
 void test_openthings_decode_record_message_int_invalid_type()
