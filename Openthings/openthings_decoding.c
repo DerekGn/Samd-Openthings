@@ -37,6 +37,10 @@
 
 static bool openthings_float_encoded( enum openthings_type type );
 
+static uint32_t openthings_get_type_bits( enum openthings_type type );
+
+static bool openthings_float_encoded_signed( enum openthings_type type );
+
 static uint32_t openthings_unpack_uint( uint8_t *const data, uint32_t len );
 
 /*-----------------------------------------------------------*/
@@ -47,7 +51,22 @@ enum openthings_decoding_status openthings_decode_record_message_float(
     enum openthings_decoding_status result = DECODING_OK;
 
     if ( openthings_float_encoded( record->description.type ) ) {
-        
+        uint32_t unpacked = openthings_unpack_uint( record->data,
+                                                    record->description.len );
+        if ( openthings_float_encoded_signed( record->description.type ) ) {
+            int32_t s;
+            if ( ( record->data[0] & 0x80 ) ) {
+                s = -( ( ( !unpacked ) &
+                         ( ( 2 ^ ( record->description.len * 8 ) ) - 1 ) ) +
+                       1 );
+            }
+
+            *value = (float)s / pow( 2, openthings_get_type_bits(
+                                            record->description.type ) );
+        } else {
+            *value = (float)unpacked / pow( 2, openthings_get_type_bits(
+                                                   record->description.type ) );
+        }
     } else {
         result = DECODING_INVALID_TYPE;
     }
@@ -131,6 +150,93 @@ static bool openthings_float_encoded( enum openthings_type type )
             break;
         case FLOATING_POINT:
             result = true;
+            break;
+        default:
+            break;
+    }
+
+    return result;
+}
+
+/*-----------------------------------------------------------*/
+
+uint32_t openthings_get_type_bits( enum openthings_type type )
+{
+    uint32_t result;
+
+    switch ( type ) {
+        case UNSIGNEDX0:
+            break;
+        case UNSIGNEDX4:
+            result = 4;
+            break;
+        case UNSIGNEDX8:
+        case SIGNEDX8:
+            result = 8;
+            break;
+        case UNSIGNEDX12:
+            result = 12;
+            break;
+        case UNSIGNEDX16:
+        case SIGNEDX16:
+            result = 16;
+            break;
+        case UNSIGNEDX20:
+            result = 20;
+            break;
+        case UNSIGNEDX24:
+        case SIGNEDX24:
+            result = 24;
+            break;
+        case CHARS:
+            break;
+        case SIGNEDX0:
+            break;
+        case ENUMERATION:
+            break;
+        case RESERVED1:
+            break;
+        case RESERVED2:
+            break;
+        case FLOATING_POINT:
+            break;
+        default:
+            break;
+    }
+
+    return result;
+}
+
+/*-----------------------------------------------------------*/
+
+static bool openthings_float_encoded_signed( enum openthings_type type )
+{
+    bool result = false;
+
+    switch ( type ) {
+        case UNSIGNEDX0:
+        case UNSIGNEDX4:
+        case UNSIGNEDX8:
+        case UNSIGNEDX12:
+        case UNSIGNEDX16:
+        case UNSIGNEDX20:
+        case UNSIGNEDX24:
+            break;
+        case CHARS:
+            break;
+        case SIGNEDX0:
+        case SIGNEDX8:
+        case SIGNEDX16:
+        case SIGNEDX24:
+            result = true;
+            break;
+        case ENUMERATION:
+            break;
+        case RESERVED1:
+            break;
+        case RESERVED2:
+            break;
+        case FLOATING_POINT:
             break;
         default:
             break;

@@ -20,6 +20,20 @@ void test_openthings_decode_record_message_float_invalid_type()
     TEST_ASSERT_EQUAL_HEX8(DECODING_INVALID_TYPE, status);
 }
 
+void test_openthings_decode_record_message_float()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX4;
+    record.description.len = 1;
+    record.data[0] = 0x12;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(1.125, value);
+}
+
 void test_openthings_decode_record_message_int_invalid_type()
 {
     struct openthings_message_record record;
