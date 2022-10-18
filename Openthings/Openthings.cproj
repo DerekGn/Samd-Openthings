@@ -112,7 +112,6 @@
       <Value>%24(PackRepoDir)\atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize debugging experience (-Og)</armgcc.compiler.optimization.level>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
@@ -144,6 +143,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="crosscompile.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_common.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_decoding.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_decoding.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_encoding.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="openthings_encoding.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="encrypt.c">

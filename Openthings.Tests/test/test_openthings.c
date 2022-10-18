@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "unity.h"
 #include "encrypt.c"
 #include "openthings.h"
@@ -132,7 +134,7 @@ void test_openthings_close_message(void)
             sizeof(struct openthings_message_footer) - 1,
         header->hdr_len);
 
-    TEST_ASSERT_EQUAL_HEX8(0xF8, footer->crc_1);
+    TEST_ASSERT_EQUAL_HEX8(0xF9, footer->crc_1);
     TEST_ASSERT_EQUAL_HEX8(0x7F, footer->crc_0);
 }
 

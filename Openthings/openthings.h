@@ -34,12 +34,13 @@
 #ifndef OPENTHINGS_H_
 #define OPENTHINGS_H_
 
+#include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #include "crosscompile.h"
 
-#define OPENTHINGS_LIB_VERSION "1.0"
+#define OPENTHINGS_LIB_VERSION "1.1"
 
 #define OPENTHINGS_MAX_MSG_SIZE                                                \
     255 /**< The maximum size of an openthings message. */
@@ -124,22 +125,21 @@ enum openthings_parameter {
  * The list of types supported.
  */
 enum openthings_type {
-    UNSIGNEDX0,
-    UNSIGNEDX4,
-    UNSIGNEDX8,
-    UNSIGNEDX12,
-    UNSIGNEDX16,
-    UNSIGNEDX20,
-    UNSIGNEDX24,
-    CHARS,
-    SIGNEDX0,
-    SIGNEDX8,
-    SIGNEDX12,
-    SIGNEDX16,
-    SIGNEDX24,
-    ENUMERATION,
-    RESERVED1,
-    RESERVED2,
+    UNSIGNEDX0 = 0x00,
+    UNSIGNEDX4 = 0x01,
+    UNSIGNEDX8 = 0x02,
+    UNSIGNEDX12 = 0x03,
+    UNSIGNEDX16 = 0x04,
+    UNSIGNEDX20 = 0x05,
+    UNSIGNEDX24 = 0x06,
+    CHARS = 0x07,
+    SIGNEDX0 =0x08,
+    SIGNEDX8 =0x09,
+    SIGNEDX16 =0x0A,
+    SIGNEDX24 =0x0B,
+    ENUMERATION =0x0C,
+    RESERVED1 =0x0D,
+    RESERVED2 =0x0E,
     FLOATING_POINT = 0x0F
 };
 
@@ -337,38 +337,5 @@ void openthings_encrypt_message(
 void openthings_decrypt_message(
     struct openthings_messge_context *const context,
     const uint8_t encryption_id );
-
-/**
- * \brief Write a uint8_t value to an open things message record
- *
- * \param record The record to write the value too
- * \param value The value to write
- *
- * \return void
- */
-void openthings_write_message_record_uint8(
-    struct openthings_message_record *const record, const uint8_t value );
-
-/**
- * \brief Write a uint16_t value to an open things message record
- *
- * \param record The record to write the value too
- * \param value The value to write
- *
- * \return void
- */
-void openthings_write_message_record_uint16(
-    struct openthings_message_record *const record, const uint16_t value );
-
-/**
- * \brief Write a uint32_t value to an open things message record
- *
- * \param record The record to write the value too
- * \param value The value to write
- *
- * \return void
- */
-void openthings_write_message_record_uint32(
-    struct openthings_message_record *const record, const uint32_t value );
 
 #endif /* OPENTHINGS_H_ */
