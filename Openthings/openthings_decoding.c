@@ -175,7 +175,7 @@ bool float_encoded( enum openthings_type type )
 
 uint32_t get_type_bits( enum openthings_type type )
 {
-    uint32_t result;
+    uint32_t result = 0;
 
     switch ( type ) {
         case UNSIGNEDX0:

@@ -77,7 +77,7 @@ enum openthings_encoding_status openthings_encode_record_message_float(
     struct openthings_message_record *const record,
     enum openthings_float_encoding encoding, const float value )
 {
-    enum openthings_encoding_status result;
+    enum openthings_encoding_status result = ENCODING_OK;
     uint32_t encoded = 0;
     uint32_t len = 0;
 
@@ -98,8 +98,6 @@ enum openthings_encoding_status openthings_encode_record_message_float(
 
                 record->description.len = len;
                 record->description.type = encoding;
-
-                result = ENCODING_OK;
             }
             break;
         case FLOAT_ENCODING_SIGNEDX8:
@@ -120,16 +118,12 @@ enum openthings_encoding_status openthings_encode_record_message_float(
 
             record->description.len = packed_len;
             record->description.type = encoding;
-
-            result = ENCODING_OK;
             break;
         case FLOAT_ENCODING_FLOATING_POINT:
             len = pack_to_array_prefix_exclude( record->data, value, 0x00 );
 
             record->description.len = len;
             record->description.type = encoding;
-
-            result = ENCODING_OK;
             break;
         default:
             break;
