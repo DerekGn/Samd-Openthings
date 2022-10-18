@@ -18,4 +18,6 @@
 #define BYTE_3( value )                                                        \
 ( ( uint8_t )( value >> 24 ) & 0xff ) /**< Mask byte 3 from a value. */
 
+#define MASK(x, bits) (x >= bits ? -1 : (1 << x) - 1)
+
 #endif /* OPENTHINGS_COMMON_H_ */

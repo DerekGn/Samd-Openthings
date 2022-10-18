@@ -33,6 +33,7 @@
 #include <math.h>
 
 #include "openthings.h"
+#include "openthings_common.h"
 #include "openthings_decoding.h"
 
 static bool openthings_float_encoded( enum openthings_type type );
@@ -57,12 +58,8 @@ enum openthings_decoding_status openthings_decode_record_message_float(
             int32_t s = unpacked;
 
             if ( ( record->data[0] & 0x80 ) ) {
-                uint32_t onescomp = ( ~unpacked ) &
-                                    ( uint32_t )(
-                                        pow( 2,
-                                             ( record->description.len * 8 ) ) -
-                                        1 );
-                s = -( onescomp + 1 );
+                uint8_t bits = record->description.len * 8;
+                s = -( ( ( ~unpacked ) & MASK( bits, 32 ) ) + 1 );
             }
 
             *value = (float)s / pow( 2, openthings_get_type_bits(
@@ -88,13 +85,9 @@ enum openthings_decoding_status openthings_decode_record_message_int(
     if ( record->description.type == SIGNEDX0 ) {
         uint32_t unpacked = openthings_unpack_uint( record->data,
                                                     record->description.len );
-
         if ( record->data[0] & 0x80 ) {
-            uint32_t onescomp = ( ~unpacked ) &
-                                ( uint32_t )(
-                                    pow( 2, ( record->description.len * 8 ) ) -
-                                    1 );
-            *value = -( onescomp + 1 );
+            uint8_t bits = record->description.len * 8;
+            *value = -( ( ( ~unpacked ) & MASK( bits, 32 ) ) + 1 );
         } else {
             *value = unpacked;
         }

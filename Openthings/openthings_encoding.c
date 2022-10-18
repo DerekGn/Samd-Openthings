@@ -45,14 +45,14 @@ static uint32_t get_encoding_bits( enum openthings_float_encoding encoding );
 static uint32_t encode_float_to_int( enum openthings_float_encoding encoding,
                                      const float value );
 
-static size_t pack_int_to_array( uint8_t *const data, int64_t value );
+static size_t pack_to_array( uint8_t *const buf, int64_t value );
 
 static uint32_t get_highest_clear_bit( const int64_t value );
 
 static uint32_t get_value_bits( int64_t value );
 
-static size_t pack_to_array( uint8_t *const data, uint32_t value,
-                             uint8_t exclude );
+static size_t pack_to_array_prefix_exclude( uint8_t *const buf, uint32_t value,
+                                            uint8_t exclude );
 
 /*-----------------------------------------------------------*/
 enum openthings_encoding_status openthings_encode_record_message_float(
@@ -75,7 +75,8 @@ enum openthings_encoding_status openthings_encode_record_message_float(
             } else {
                 encoded = encode_float_to_int( encoding, value );
 
-                len = pack_to_array( record->data, encoded, 0x00 );
+                len = pack_to_array_prefix_exclude( record->data, encoded,
+                                                    0x00 );
 
                 record->description.len = len;
                 record->description.type = encoding;
@@ -91,10 +92,12 @@ enum openthings_encoding_status openthings_encode_record_message_float(
 
             if ( value < 0 )  // pack signed
             {
-                packed_len = pack_to_array( record->data, encoded, 0xFF );
+                packed_len = pack_to_array_prefix_exclude( record->data,
+                                                           encoded, 0xFF );
             } else  // pack unsigned
             {
-                packed_len = pack_to_array( record->data, encoded, 0x00 );
+                packed_len = pack_to_array_prefix_exclude( record->data,
+                                                           encoded, 0x00 );
             }
 
             record->description.len = packed_len;
@@ -103,7 +106,7 @@ enum openthings_encoding_status openthings_encode_record_message_float(
             result = ENCODING_OK;
             break;
         case FLOAT_ENCODING_FLOATING_POINT:
-            len = pack_to_array( record->data, value, 0x00 );
+            len = pack_to_array_prefix_exclude( record->data, value, 0x00 );
 
             record->description.len = len;
             record->description.type = encoding;
@@ -130,10 +133,10 @@ enum openthings_encoding_status openthings_encode_record_message_int(
 
         encoded &= (int64_t)pow( 2, bits ) - 1;
 
-        record->description.len = pack_int_to_array( record->data, encoded );
+        record->description.len = pack_to_array( record->data, encoded );
         record->description.type = SIGNEDX0;
     } else {
-        record->description.len = pack_int_to_array( record->data, value );
+        record->description.len = pack_to_array( record->data, value );
         record->description.type = SIGNEDX0;
     }
 
@@ -164,7 +167,8 @@ enum openthings_encoding_status openthings_encode_record_message_string(
 enum openthings_encoding_status openthings_encode_record_message_uint(
     struct openthings_message_record *const record, const uint32_t value )
 {
-    record->description.len = pack_to_array( record->data, value, 0x00 );
+    record->description.len = pack_to_array_prefix_exclude( record->data, value,
+                                                            0x00 );
     record->description.type = UNSIGNEDX0;
 
     return ENCODING_OK;
@@ -224,21 +228,21 @@ uint32_t encode_float_to_int( enum openthings_float_encoding encoding,
 
 /*-----------------------------------------------------------*/
 
-size_t pack_int_to_array( uint8_t *const data, int64_t value )
+size_t pack_to_array( uint8_t *const buf, int64_t value )
 {
-    uint64_t shift = 56;
-    size_t len = 0;
+    size_t packed_len = 0;
+    uint8_t *ptr = (uint8_t *)&value;
+    ptr += 7;
 
     for ( uint32_t i = 0; i < sizeof( int64_t ); i++ ) {
-        uint8_t v = ( value >> shift ) & 0xFF;
-        shift -= 8;
-
-        if ( v || len > 0 ) {
-            data[len++] = v;
+        if ( *ptr || packed_len > 0 ) {
+            buf[packed_len++] = *ptr;
         }
+
+        ptr--;
     }
 
-    return len;
+    return packed_len;
 }
 
 /*-----------------------------------------------------------*/
@@ -251,6 +255,8 @@ static uint32_t get_value_bits( int64_t value )
         return get_highest_clear_bit( value ) + 2;
     }
 }
+
+/*-----------------------------------------------------------*/
 
 static uint32_t get_highest_clear_bit( const int64_t value )
 {
@@ -269,15 +275,28 @@ static uint32_t get_highest_clear_bit( const int64_t value )
     return bit_num;
 }
 
-size_t pack_to_array( uint8_t *const data, uint32_t value, uint8_t exclude )
+/*-----------------------------------------------------------*/
+
+/**
+ * \brief Pack the value to an array excluding prefixed bytes with matching
+ * exclude value
+ *
+ * \param buf The data buffer to pack value too
+ * \param value The value to pack
+ * \param exclude The prefix exclusion byte value
+ *
+ * \return size_t The number of bytes packed into the buffer
+ */
+size_t pack_to_array_prefix_exclude( uint8_t *const buf, uint32_t value,
+                                     uint8_t exclude )
 {
     size_t packed_len = 0;
-    uint8_t *ptr = &value;
+    uint8_t *ptr = (uint8_t *)&value;
     ptr += 3;
 
     for ( uint32_t i = 0; i < sizeof( uint32_t ); i++ ) {
         if ( ( *ptr != exclude ) || ( packed_len > 0 ) ) {
-            data[packed_len++] = *ptr;
+            buf[packed_len++] = *ptr;
         }
 
         ptr--;
@@ -285,3 +304,5 @@ size_t pack_to_array( uint8_t *const data, uint32_t value, uint8_t exclude )
 
     return packed_len;
 }
+
+/*-----------------------------------------------------------*/
