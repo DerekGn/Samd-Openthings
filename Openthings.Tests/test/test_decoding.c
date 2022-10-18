@@ -172,7 +172,7 @@ void test_openthings_decode_record_message_float_signed_x8_neg_value()
     enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
 
     TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
-    TEST_ASSERT_EQUAL_FLOAT(-1.123457, value);
+    TEST_ASSERT_EQUAL_FLOAT(-1.125, value);
 }
 
 void test_openthings_decode_record_message_float_signed_x16_neg_value()
@@ -180,15 +180,15 @@ void test_openthings_decode_record_message_float_signed_x16_neg_value()
     struct openthings_message_record record;
     record.description.type = SIGNEDX16;
     record.description.len = 3;
-    record.data[0] = 0x7E;
+    record.data[0] = 0xFE;
     record.data[1] = 0xE0;
-    record.data[1] = 0x65;
+    record.data[2] = 0x65;
     float value;
 
     enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
 
     TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
-    TEST_ASSERT_EQUAL_FLOAT(-1.123457, value);
+    TEST_ASSERT_EQUAL_FLOAT(-1.12345886, value);
 }
 
 void test_openthings_decode_record_message_float_signed_x24_neg_value()
@@ -196,16 +196,16 @@ void test_openthings_decode_record_message_float_signed_x24_neg_value()
     struct openthings_message_record record;
     record.description.type = SIGNEDX24;
     record.description.len = 4;
-    record.data[0] = 0x7E;
+    record.data[0] = 0xFE;
     record.data[1] = 0xE0;
-    record.data[1] = 0x65;
-    record.data[1] = 0x35;
+    record.data[2] = 0x65;
+    record.data[3] = 0x35;
     float value;
 
     enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
 
     TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
-    TEST_ASSERT_EQUAL_FLOAT(-1.123457, value);
+    TEST_ASSERT_EQUAL_FLOAT(-1.12345576, value);
 }
 
 void test_openthings_decode_record_message_int_invalid_type()
