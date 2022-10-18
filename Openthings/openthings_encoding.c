@@ -40,17 +40,35 @@
 #include "openthings_common.h"
 #include "openthings_encoding.h"
 
+
+/**
+ * \brief Get the number of encoding bits for a given encoding
+ * 
+ * \param encoding The encoding
+ * 
+ * \return uint32_t The number of bits for encoding
+ */
 static uint32_t get_encoding_bits( enum openthings_float_encoding encoding );
 
 static uint32_t encode_float_to_int( enum openthings_float_encoding encoding,
                                      const float value );
 
-static size_t pack_to_array( uint8_t *const buf, int64_t value );
-
 static uint32_t get_highest_clear_bit( const int64_t value );
 
 static uint32_t get_value_bits( int64_t value );
 
+static size_t pack_to_array( uint8_t *const buf, int64_t value );
+
+/**
+ * \brief Pack the value to an array excluding prefixed bytes with matching
+ * exclude value
+ *
+ * \param buf The data buffer to pack value too
+ * \param value The value to pack
+ * \param exclude The prefix exclusion byte value
+ *
+ * \return size_t The number of bytes packed into the buffer
+ */
 static size_t pack_to_array_prefix_exclude( uint8_t *const buf, uint32_t value,
                                             uint8_t exclude );
 
@@ -277,16 +295,6 @@ static uint32_t get_highest_clear_bit( const int64_t value )
 
 /*-----------------------------------------------------------*/
 
-/**
- * \brief Pack the value to an array excluding prefixed bytes with matching
- * exclude value
- *
- * \param buf The data buffer to pack value too
- * \param value The value to pack
- * \param exclude The prefix exclusion byte value
- *
- * \return size_t The number of bytes packed into the buffer
- */
 size_t pack_to_array_prefix_exclude( uint8_t *const buf, uint32_t value,
                                      uint8_t exclude )
 {

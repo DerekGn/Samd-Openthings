@@ -36,13 +36,28 @@
 #include "openthings_common.h"
 #include "openthings_decoding.h"
 
-static bool openthings_float_encoded( enum openthings_type type );
+static bool float_encoded_signed( enum openthings_type type );
 
-static uint32_t openthings_get_type_bits( enum openthings_type type );
+static uint32_t get_type_bits( enum openthings_type type );
 
-static bool openthings_float_encoded_signed( enum openthings_type type );
+/**
+ * \brief Indicates if the type is a float encoded value
+ *
+ * \param type The type of encoding
+ *
+ * \return bool True of float encoded
+ */
+static bool float_encoded( enum openthings_type type );
 
-static uint32_t openthings_unpack_uint( uint8_t *const data, uint32_t len );
+/**
+ * \brief Unpacks a buffer of bytes to an int value
+ *
+ * \param buf The data buffer to unpack
+ * \param len The length of the data buffer to unpack
+ *
+ * \return uint32_t The unpacked value
+ */
+static uint32_t unpack_uint( uint8_t *const buf, uint32_t len );
 
 /*-----------------------------------------------------------*/
 
@@ -51,10 +66,10 @@ enum openthings_decoding_status openthings_decode_record_message_float(
 {
     enum openthings_decoding_status result = DECODING_OK;
 
-    if ( openthings_float_encoded( record->description.type ) ) {
-        uint32_t unpacked = openthings_unpack_uint( record->data,
-                                                    record->description.len );
-        if ( openthings_float_encoded_signed( record->description.type ) ) {
+    if ( float_encoded( record->description.type ) ) {
+        uint32_t unpacked = unpack_uint( record->data,
+                                         record->description.len );
+        if ( float_encoded_signed( record->description.type ) ) {
             int32_t s = unpacked;
 
             if ( ( record->data[0] & 0x80 ) ) {
@@ -62,11 +77,11 @@ enum openthings_decoding_status openthings_decode_record_message_float(
                 s = -( ( ( ~unpacked ) & MASK( bits, 32 ) ) + 1 );
             }
 
-            *value = (float)s / pow( 2, openthings_get_type_bits(
-                                            record->description.type ) );
+            *value = (float)s /
+                     pow( 2, get_type_bits( record->description.type ) );
         } else {
-            *value = (float)unpacked / pow( 2, openthings_get_type_bits(
-                                                   record->description.type ) );
+            *value = (float)unpacked /
+                     pow( 2, get_type_bits( record->description.type ) );
         }
     } else {
         result = DECODING_INVALID_TYPE;
@@ -83,8 +98,8 @@ enum openthings_decoding_status openthings_decode_record_message_int(
     enum openthings_decoding_status result = DECODING_OK;
 
     if ( record->description.type == SIGNEDX0 ) {
-        uint32_t unpacked = openthings_unpack_uint( record->data,
-                                                    record->description.len );
+        uint32_t unpacked = unpack_uint( record->data,
+                                         record->description.len );
         if ( record->data[0] & 0x80 ) {
             uint8_t bits = record->description.len * 8;
             *value = -( ( ( ~unpacked ) & MASK( bits, 32 ) ) + 1 );
@@ -106,8 +121,7 @@ enum openthings_decoding_status openthings_decode_record_message_uint(
     enum openthings_decoding_status result = DECODING_OK;
 
     if ( record->description.type == UNSIGNEDX0 ) {
-        *value = openthings_unpack_uint( record->data,
-                                         record->description.len );
+        *value = unpack_uint( record->data, record->description.len );
     } else {
         result = DECODING_INVALID_TYPE;
     }
@@ -117,7 +131,7 @@ enum openthings_decoding_status openthings_decode_record_message_uint(
 
 /*-----------------------------------------------------------*/
 
-static bool openthings_float_encoded( enum openthings_type type )
+bool float_encoded( enum openthings_type type )
 {
     bool result = false;
 
@@ -159,7 +173,7 @@ static bool openthings_float_encoded( enum openthings_type type )
 
 /*-----------------------------------------------------------*/
 
-uint32_t openthings_get_type_bits( enum openthings_type type )
+uint32_t get_type_bits( enum openthings_type type )
 {
     uint32_t result;
 
@@ -208,7 +222,7 @@ uint32_t openthings_get_type_bits( enum openthings_type type )
 
 /*-----------------------------------------------------------*/
 
-static bool openthings_float_encoded_signed( enum openthings_type type )
+bool float_encoded_signed( enum openthings_type type )
 {
     bool result = false;
 
@@ -246,7 +260,7 @@ static bool openthings_float_encoded_signed( enum openthings_type type )
 
 /*-----------------------------------------------------------*/
 
-static uint32_t openthings_unpack_uint( uint8_t *const data, uint32_t len )
+uint32_t unpack_uint( uint8_t *const data, uint32_t len )
 {
     uint32_t result = 0;
 
