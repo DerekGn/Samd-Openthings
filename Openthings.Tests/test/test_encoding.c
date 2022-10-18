@@ -148,7 +148,7 @@ void test_openthings_encode_record_message_float_unsigned_x24()
 void test_openthings_encode_record_message_float_signed_x8_neg_value()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {0x7E, 224};
+    uint8_t expected[] = {0xFE, 224};
 
     enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_SIGNEDX8, -1.123456789);
 
@@ -174,7 +174,7 @@ void test_openthings_encode_record_message_float_signed_x8_pos_value()
 void test_openthings_encode_record_message_float_signed_x16_neg_value()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {0x7E, 224, 101};
+    uint8_t expected[] = {0xFE, 224, 101};
 
     enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_SIGNEDX16, -1.123456789);
 
@@ -200,9 +200,9 @@ void test_openthings_encode_record_message_float_signed_x16_pos_value()
 void test_openthings_encode_record_message_float_signed_x24_neg_value()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {0x7E, 0xE0, 0x65, 0x22};
+    uint8_t expected[] = {0xFE, 0xE0, 0x65, 0x22};
 
-    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_SIGNEDX24, -1.123456789);
+     enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_SIGNEDX24, -1.123456789);
 
     TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
     TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
