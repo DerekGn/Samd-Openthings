@@ -74,7 +74,7 @@ enum openthings_decoding_status openthings_decode_record_message_float(
 
             if ( ( record->data[0] & 0x80 ) ) {
                 uint8_t bits = record->description.len * 8;
-                s = -( ( ( ~unpacked ) & MASK( bits, 32 ) ) + 1 );
+                s = -( ( ( ~unpacked ) & generate_mask( bits/8 ) ) + 1 );
             }
 
             *value = (float)s /
@@ -102,7 +102,7 @@ enum openthings_decoding_status openthings_decode_record_message_int(
                                          record->description.len );
         if ( record->data[0] & 0x80 ) {
             uint8_t bits = record->description.len * 8;
-            *value = -( ( ( ~unpacked ) & MASK( bits, 32 ) ) + 1 );
+            *value = -( ( ( ~unpacked ) & generate_mask( bits/8 ) ) + 1 );
         } else {
             *value = unpacked;
         }

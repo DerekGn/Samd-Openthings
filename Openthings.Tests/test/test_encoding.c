@@ -1,4 +1,5 @@
 #include "unity.h"
+#include "openthings_common.h"
 #include "openthings_encoding.h"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
@@ -122,7 +123,7 @@ void test_openthings_encode_record_message_float_unsigned_x16()
 void test_openthings_encode_record_message_float_unsigned_x20()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {17, 249, 174};
+    uint8_t expected[] = {0x11, 0xF9, 0xAE};
 
     enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX20, 1.123456789);
 
@@ -135,7 +136,7 @@ void test_openthings_encode_record_message_float_unsigned_x20()
 void test_openthings_encode_record_message_float_unsigned_x24()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {01, 31, 154, 222};
+    uint8_t expected[] = {0x01, 0x1F, 0x9A, 0xDE};
 
     enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX24, 1.123456789);
 
@@ -161,7 +162,7 @@ void test_openthings_encode_record_message_float_signed_x8_neg_value()
 void test_openthings_encode_record_message_float_signed_x8_pos_value()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {1, 32};
+    uint8_t expected[] = {0x01, 0x20};
 
     enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_SIGNEDX8, 1.123456789);
 
@@ -187,7 +188,7 @@ void test_openthings_encode_record_message_float_signed_x16_neg_value()
 void test_openthings_encode_record_message_float_signed_x16_pos_value()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {1, 31, 155};
+    uint8_t expected[] = {0x1, 0x1F, 0x9B};
 
     enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_SIGNEDX16, 1.123456789);
 
@@ -240,7 +241,7 @@ void test_openthings_encode_record_message_int_one()
 void test_openthings_encode_record_message_int_minus_one()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {0x01, 0xFF};
+    uint8_t expected[] = {0xFF};
     int8_t value = -1;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
@@ -254,7 +255,7 @@ void test_openthings_encode_record_message_int_minus_one()
 void test_openthings_encode_record_message_int_minus_two()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {0x01, 0xFE};
+    uint8_t expected[] = {0xFE};
     int8_t value = -2;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
@@ -268,8 +269,22 @@ void test_openthings_encode_record_message_int_minus_two()
 void test_openthings_encode_record_message_int_minus_three()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {0x03, 0xFD};
+    uint8_t expected[] = {0xFD};
     int8_t value = -3;
+
+    enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(SIGNEDX0, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, ARRAY_SIZE(expected));
+}
+
+void test_openthings_encode_record_message_int_minus_50()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0xCE};
+    int8_t value = -50;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
 
@@ -282,7 +297,7 @@ void test_openthings_encode_record_message_int_minus_three()
 void test_openthings_encode_record_message_int_minus_127()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {127, 129};
+    uint8_t expected[] = {0x81};
     int8_t value = -127;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
@@ -296,7 +311,7 @@ void test_openthings_encode_record_message_int_minus_127()
 void test_openthings_encode_record_message_int_minus_128()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {127, 128};
+    uint8_t expected[] = {0x80};
     int8_t value = -128;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
@@ -310,7 +325,7 @@ void test_openthings_encode_record_message_int_minus_128()
 void test_openthings_encode_record_message_int_minus_129()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {255, 127};
+    uint8_t expected[] = {0xFF, 0x7F};
     int16_t value = -129;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
@@ -324,7 +339,7 @@ void test_openthings_encode_record_message_int_minus_129()
 void test_openthings_encode_record_message_int_minus_32767()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {127, 128, 1};
+    uint8_t expected[] = {0x80, 0x01};
     int16_t value = -32767;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
@@ -338,7 +353,7 @@ void test_openthings_encode_record_message_int_minus_32767()
 void test_openthings_encode_record_message_int_minus_32768()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {127, 128, 0};
+    uint8_t expected[] = {0x80, 0x00};
     int32_t value = -32768;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);
@@ -352,7 +367,7 @@ void test_openthings_encode_record_message_int_minus_32768()
 void test_openthings_encode_record_message_int_minus_2147483648()
 {
     struct openthings_message_record record;
-    uint8_t expected[] = {127, 128, 0, 0, 0};
+    uint8_t expected[] = {0x80, 0x00, 0x00, 0x00};
     int32_t value = -2147483648;
 
     enum openthings_encoding_status status = openthings_encode_record_message_int(&record, value);

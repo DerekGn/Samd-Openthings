@@ -1,4 +1,5 @@
 #include "unity.h"
+#include "openthings_common.h"
 #include "openthings_decoding.h"
 
 void setUp(void)
@@ -219,6 +220,76 @@ void test_openthings_decode_record_message_int_invalid_type()
     TEST_ASSERT_EQUAL_HEX8(DECODING_INVALID_TYPE, status);
 }
 
+void test_openthings_decode_record_message_int_minus_one()
+{
+    int8_t value;
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX0;
+    record.description.len = 1;
+    record.data[0] = 0xFF;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_int(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(-1, value);
+}
+
+void test_openthings_decode_record_message_int_minus_50()
+{
+    int8_t value;
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX0;
+    record.description.len = 1;
+    record.data[0] = 0xCE;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_int(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(-50, value);
+}
+
+void test_openthings_decode_record_message_int_minus_127()
+{
+    int8_t value;
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX0;
+    record.description.len = 1;
+    record.data[0] = 0x81;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_int(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(-127, value);
+}
+
+void test_openthings_decode_record_message_int_minus_128()
+{
+    int8_t value;
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX0;
+    record.description.len = 1;
+    record.data[0] = 0x80;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_int(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(-128, value);
+}
+
+void test_openthings_decode_record_message_int_one()
+{
+    int8_t value;
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX0;
+    record.description.len = 1;
+    record.data[0] = 0x01;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_int(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(1, value);
+}
+
 void test_openthings_decode_record_message_int_byte_upper()
 {
     int8_t value;
@@ -247,7 +318,7 @@ void test_openthings_decode_record_message_int_byte_lower()
     TEST_ASSERT_EQUAL_HEX8(-128, value);
 }
 
-void test_openthings_decode_record_message_int_short_upper()
+void test_openthings_decode_record_message_int_32767()
 {
     int16_t value;
     struct openthings_message_record record;
@@ -260,6 +331,21 @@ void test_openthings_decode_record_message_int_short_upper()
 
     TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
     TEST_ASSERT_EQUAL_INT16(32767, value);
+}
+
+void test_openthings_decode_record_message_int_32768()
+{
+    int16_t value;
+    struct openthings_message_record record;
+    record.description.type = SIGNEDX0;
+    record.description.len = 2;
+    record.data[0] = 0x80;
+    record.data[1] = 0x00;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_int(&record, (uint32_t *const)&value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_INT16(32768, value);
 }
 
 void test_openthings_decode_record_message_int_short_lower()
@@ -277,7 +363,7 @@ void test_openthings_decode_record_message_int_short_lower()
     TEST_ASSERT_EQUAL_INT16(-32768, value);
 }
 
-void test_openthings_decode_record_message_int_int_upper()
+void test_openthings_decode_record_message_int_2147483647()
 {
     int32_t value;
     struct openthings_message_record record;
@@ -294,7 +380,7 @@ void test_openthings_decode_record_message_int_int_upper()
     TEST_ASSERT_EQUAL_INT32(2147483647, value);
 }
 
-void test_openthings_decode_record_message_int_int_lower()
+void test_openthings_decode_record_message_int_minus_2147483648()
 {
     int32_t value;
     struct openthings_message_record record;

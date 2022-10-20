@@ -145,6 +145,9 @@
     <Compile Include="crosscompile.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="openthings_common.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="openthings_common.h">
       <SubType>compile</SubType>
     </Compile>

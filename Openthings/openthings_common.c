@@ -29,20 +29,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */ 
+ */
+#include <stdint.h>
+#include <stddef.h>
 
-#ifndef OPENTHINGS_COMMON_H_
-#define OPENTHINGS_COMMON_H_
+int64_t generate_mask(uint32_t bytes)
+{
+    int64_t mask = 0;
+    
+    for (size_t i = 0; i < bytes; i++)
+    {
+        if(mask > 0)
+        {
+            mask <<= 8;
+        }
+        mask += 0xFF;
+    }
 
-#define BYTE_0( value )                                                        \
-( (uint8_t)value & 0xff ) /**< Mask byte 0 from a value. */
-#define BYTE_1( value )                                                        \
-( ( uint8_t )( value >> 8 ) & 0xff ) /**< Mask byte 1 from a value. */
-#define BYTE_2( value )                                                        \
-( ( uint8_t )( value >> 16 ) & 0xff ) /**< Mask byte 2 from a value. */
-#define BYTE_3( value )                                                        \
-( ( uint8_t )( value >> 24 ) & 0xff ) /**< Mask byte 3 from a value. */
-
-int64_t generate_mask(uint32_t bits);
-
-#endif /* OPENTHINGS_COMMON_H_ */
+    return mask;
+}

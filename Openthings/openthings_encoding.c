@@ -40,12 +40,11 @@
 #include "openthings_common.h"
 #include "openthings_encoding.h"
 
-
 /**
  * \brief Get the number of encoding bits for a given encoding
- * 
+ *
  * \param encoding The encoding
- * 
+ *
  * \return uint32_t The number of bits for encoding
  */
 static uint32_t get_encoding_bits( enum openthings_float_encoding encoding );
@@ -58,6 +57,8 @@ static uint32_t get_highest_clear_bit( const int64_t value );
 static uint32_t get_value_bits( int64_t value );
 
 static size_t pack_to_array( uint8_t *const buf, int64_t value );
+
+static uint32_t round_up( uint32_t value, uint32_t multiple );
 
 /**
  * \brief Pack the value to an array excluding prefixed bytes with matching
@@ -133,6 +134,7 @@ enum openthings_encoding_status openthings_encode_record_message_float(
 }
 
 /*-----------------------------------------------------------*/
+
 enum openthings_encoding_status openthings_encode_record_message_int(
     struct openthings_message_record *const record, const int32_t value )
 {
@@ -141,9 +143,11 @@ enum openthings_encoding_status openthings_encode_record_message_int(
 
         uint32_t bits = get_value_bits( value );
 
-        bits = ( ( ( (float)bits - 1 ) / 8 ) + 1 ) * 8;
+        bits = round_up( bits, 8 );
 
-        encoded &= (int64_t)pow( 2, bits ) - 1;
+        int64_t mask = generate_mask( bits / 8 );
+
+        encoded &= mask;
 
         record->description.len = pack_to_array( record->data, encoded );
         record->description.type = SIGNEDX0;
@@ -262,7 +266,7 @@ size_t pack_to_array( uint8_t *const buf, int64_t value )
 static uint32_t get_value_bits( int64_t value )
 {
     if ( value == -1 ) {
-        return 2;
+        return 8;
     } else {
         return get_highest_clear_bit( value ) + 2;
     }
@@ -308,3 +312,9 @@ size_t pack_to_array_prefix_exclude( uint8_t *const buf, uint32_t value,
 }
 
 /*-----------------------------------------------------------*/
+static uint32_t round_up( uint32_t value, uint32_t multiple )
+{
+    if ( value % multiple == 0 )
+        return value;
+    return ( multiple - value % multiple ) + value;
+}
