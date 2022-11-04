@@ -40,7 +40,7 @@
 
 #include "crosscompile.h"
 
-#define OPENTHINGS_LIB_VERSION "1.2"
+#define OPENTHINGS_LIB_VERSION "1.2.1"
 
 #define OPENTHINGS_MAX_MSG_SIZE                                                \
     255 /**< The maximum size of an openthings message. */
@@ -99,26 +99,7 @@ enum openthings_parameter {
     PHASE1_POWER = 0x79,
     PHASE2_POWER = 0x7A,
     PHASE3_POWER = 0x7B,
-    THREE_PHASE_TOTAL_POWER = 0x7C,
-    VOC_INDEX = 0x7D,
-    CURRENT_L = 0x7E,
-    PHASE_ANGLE_L = 0x7F,
-    ACTIVE_POWER_L = 0x80,
-    POWER_FACTOR_L = 0x81,
-    REACTIVE_POWER_L = 0x82,
-    APPARENT_POWER_L = 0x83,
-    CURRENT_N = 0x84,
-    PHASE_ANGLE_N = 0x85,
-    ACTIVE_POWER_N = 0x86,
-    POWER_FACTOR_N = 0x87,
-    REACTIVE_POWER_N = 0x88,
-    APPARENT_POWER_N = 0x89,
-    FWD_ACTIVE_ENERGY = 0x8A,
-    REV_ACTIVE_ENERGY = 0x8B,
-    ABS_ACTIVE_ENERGY = 0x8C,
-    FWD_REACTIVE_ENERGY = 0x8D,
-    REV_REACTIVE_ENERGY = 0x8E,
-    ABS_REACTIVE_ENERGY = 0x8F
+    THREE_PHASE_TOTAL_POWER = 0x7C
 };
 
 /**
