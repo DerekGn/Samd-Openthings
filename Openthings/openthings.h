@@ -40,7 +40,7 @@
 
 #include "crosscompile.h"
 
-#define OPENTHINGS_LIB_VERSION "1.2.1"
+#define OPENTHINGS_LIB_VERSION "1.2.2"
 
 #define OPENTHINGS_MAX_MSG_SIZE                                                \
     255 /**< The maximum size of an openthings message. */
@@ -128,9 +128,9 @@ enum openthings_type {
  * The message function status result
  */
 enum openthings_status {
-    STATUS_OK,         /**< The operation succeeded */
-    STATUS_HEADER_LEN, /**< The operation failed due to invalid header length */
-    STATUS_CRC_INVALID /**< The operation failed due to invalid crc */
+    OT_STATUS_OK,         /**< The operation succeeded */
+    OT_STATUS_HEADER_LEN, /**< The operation failed due to invalid header length */
+    OT_STATUS_CRC_INVALID /**< The operation failed due to invalid crc */
 };
 
 /**

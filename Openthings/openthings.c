@@ -197,7 +197,7 @@ void openthings_get_message_header(
 enum openthings_status openthings_open_message(
     struct openthings_messge_context *const context )
 {
-    enum openthings_status result = STATUS_OK;
+    enum openthings_status result = OT_STATUS_OK;
 
     struct openthings_message_header
         *header = (struct openthings_message_header *)context->buffer;
@@ -217,12 +217,12 @@ enum openthings_status openthings_open_message(
         if ( footer->eod == 0 && exp_crc == calc_crc ) {
             context->eom = sizeof( struct openthings_message_header );
 
-            result = STATUS_OK;
+            result = OT_STATUS_OK;
         } else {
-            result = STATUS_CRC_INVALID;
+            result = OT_STATUS_CRC_INVALID;
         }
     } else {
-        result = STATUS_HEADER_LEN;
+        result = OT_STATUS_HEADER_LEN;
     }
 
     return result;
