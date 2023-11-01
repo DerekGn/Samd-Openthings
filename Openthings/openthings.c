@@ -136,10 +136,11 @@ void openthings_encrypt_message(
 
 /*-----------------------------------------------------------*/
 
-void openthings_decrypt_message(
+bool openthings_decrypt_message(
     struct openthings_messge_context *const context,
     const uint8_t encryption_id )
 {
+    bool result = false;
     struct openthings_message_header
         *header = (struct openthings_message_header *)context->buffer;
 
@@ -154,7 +155,11 @@ void openthings_decrypt_message(
         for ( i = OPENTHINGS_CRC_START; i <= header->hdr_len; ++i ) {
             context->buffer[i] = encrypt_decrypt( context->buffer[i] );
         }
+        
+        result = true;
     }
+    
+    return result;
 }
 
 

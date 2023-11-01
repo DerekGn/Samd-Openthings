@@ -40,7 +40,7 @@
 
 #include "crosscompile.h"
 
-#define OPENTHINGS_LIB_VERSION "1.2.2"
+#define OPENTHINGS_LIB_VERSION "1.2.3"
 
 #define OPENTHINGS_MAX_MSG_SIZE                                                \
     255 /**< The maximum size of an openthings message. */
@@ -307,15 +307,16 @@ void openthings_encrypt_message(
     struct openthings_messge_context *const context,
     const uint8_t encryption_id, const uint16_t noise );
 
+
 /**
  * \brief Decrypt the message bytes in the context
  *
  * \param[in] context The openthings message context.
  * \param[in] encryption_id The encryption id
  *
- * \return void
+ * \return bool true if message was encrypted
  */
-void openthings_decrypt_message(
+bool openthings_decrypt_message(
     struct openthings_messge_context *const context,
     const uint8_t encryption_id );
 
