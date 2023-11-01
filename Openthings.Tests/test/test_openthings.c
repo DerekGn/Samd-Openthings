@@ -33,7 +33,7 @@ void write_test_record(
 void open_context_and_assert_test_record(
     struct openthings_messge_context *const context)
 {
-    if (openthings_open_message(context) == STATUS_OK)
+    if (openthings_open_message(context) == OT_STATUS_OK)
     {
         struct openthings_message_record record;
 
@@ -134,7 +134,7 @@ void test_openthings_close_message(void)
             sizeof(struct openthings_message_footer) - 1,
         header->hdr_len);
 
-    TEST_ASSERT_EQUAL_HEX8(0xF9, footer->crc_1);
+    TEST_ASSERT_EQUAL_HEX8(0xFA, footer->crc_1);
     TEST_ASSERT_EQUAL_HEX8(0x7F, footer->crc_0);
 }
 
@@ -148,7 +148,7 @@ void test_openthings_open_message(void)
 
     openthings_close_message(&context);
 
-    TEST_ASSERT_EQUAL_HEX8(STATUS_OK, openthings_open_message(&context));
+    TEST_ASSERT_EQUAL_HEX8(OT_STATUS_OK, openthings_open_message(&context));
 }
 
 void test_openthings_read_record(void)
