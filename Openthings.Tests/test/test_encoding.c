@@ -56,6 +56,7 @@ void test_openthings_encode_record_message_float_invalid_unsigned_x24()
 
     TEST_ASSERT_EQUAL_HEX8(ENCODING_FAIL_OUTRANGE, status);
 }
+
 void test_openthings_encode_record_message_float_unsigned_x4_zero()
 {
     struct openthings_message_record record;

@@ -17,7 +17,7 @@ void tearDown(void)
 }
 
 void write_test_record(
-    struct openthings_messge_context *const context)
+    struct openthings_message_context *const context)
 {
     struct openthings_message_record record;
 
@@ -31,7 +31,7 @@ void write_test_record(
 }
 
 void open_context_and_assert_test_record(
-    struct openthings_messge_context *const context)
+    struct openthings_message_context *const context)
 {
     if (openthings_open_message(context) == OT_STATUS_OK)
     {
@@ -54,7 +54,7 @@ void open_context_and_assert_test_record(
 
 void test_openthings_init_message_eom(void)
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
@@ -63,7 +63,7 @@ void test_openthings_init_message_eom(void)
 
 void test_openthings_init_message_header(void)
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
@@ -80,7 +80,7 @@ void test_openthings_init_message_header(void)
 
 void test_openthings_write_record(void)
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     context.eom = sizeof(struct openthings_message_header);
 
@@ -99,7 +99,7 @@ void test_openthings_write_record(void)
 
 void test_openthings_write_record_no_space(void)
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     context.eom = OPENTHINGS_MAX_MSG_SIZE;
 
@@ -110,7 +110,7 @@ void test_openthings_write_record_no_space(void)
 
 void test_openthings_close_message(void)
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     context.eom = sizeof(struct openthings_message_header);
 
@@ -134,13 +134,13 @@ void test_openthings_close_message(void)
             sizeof(struct openthings_message_footer) - 1,
         header->hdr_len);
 
-    TEST_ASSERT_EQUAL_HEX8(0xFA, footer->crc_1);
+    TEST_ASSERT_EQUAL_HEX8(0xFD, footer->crc_1);
     TEST_ASSERT_EQUAL_HEX8(0x7F, footer->crc_0);
 }
 
 void test_openthings_open_message(void)
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
@@ -153,7 +153,7 @@ void test_openthings_open_message(void)
 
 void test_openthings_read_record(void)
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
@@ -166,7 +166,7 @@ void test_openthings_read_record(void)
 
 void test_openthings_read_header()
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
@@ -185,7 +185,7 @@ void test_openthings_read_header()
 
 void test_openthings_encrypt_decrypt()
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     openthings_init_message(&context, 0xAA, 0x55, 0xDEADBEEF);
 
@@ -202,7 +202,7 @@ void test_openthings_encrypt_decrypt()
 
 void test_openthings_random_payload()
 {
-    struct openthings_messge_context context = {
+    struct openthings_message_context context = {
         {0x03, 0xd3, 0x92, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
          0x00, 0x00, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
          0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,

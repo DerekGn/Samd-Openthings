@@ -53,7 +53,7 @@ static int16_t crc( const uint8_t const *buf, size_t size );
 
 /*-----------------------------------------------------------*/
 
-void openthings_init_message( struct openthings_messge_context *const context,
+void openthings_init_message( struct openthings_message_context *const context,
                               const uint8_t manufacturer_id,
                               const uint8_t product_id,
                               const uint32_t sensor_id )
@@ -76,7 +76,7 @@ void openthings_init_message( struct openthings_messge_context *const context,
 
 /*-----------------------------------------------------------*/
 
-bool openthings_write_record( struct openthings_messge_context *const context,
+bool openthings_write_record( struct openthings_message_context *const context,
                               struct openthings_message_record *const record )
 {
     if ( context->eom + RECORD_SIZE( record ) +
@@ -94,7 +94,7 @@ bool openthings_write_record( struct openthings_messge_context *const context,
 
 /*-----------------------------------------------------------*/
 
-bool openthings_read_record( struct openthings_messge_context *const context,
+bool openthings_read_record( struct openthings_message_context *const context,
                              const struct openthings_message_record *record )
 {
     if ( context->buffer[context->eom] != 0 ) {
@@ -114,7 +114,7 @@ bool openthings_read_record( struct openthings_messge_context *const context,
 /*-----------------------------------------------------------*/
 
 void openthings_encrypt_message(
-    struct openthings_messge_context *const context,
+    struct openthings_message_context *const context,
     const uint8_t encryption_id, const uint16_t noise )
 {
     struct openthings_message_header
@@ -137,7 +137,7 @@ void openthings_encrypt_message(
 /*-----------------------------------------------------------*/
 
 bool openthings_decrypt_message(
-    struct openthings_messge_context *const context,
+    struct openthings_message_context *const context,
     const uint8_t encryption_id )
 {
     bool result = false;
@@ -166,7 +166,7 @@ bool openthings_decrypt_message(
 
 /*-----------------------------------------------------------*/
 
-void openthings_close_message( struct openthings_messge_context *const context )
+void openthings_close_message( struct openthings_message_context *const context )
 {
     struct openthings_message_header
         *header = (struct openthings_message_header *)context->buffer;
@@ -190,7 +190,7 @@ void openthings_close_message( struct openthings_messge_context *const context )
 /*-----------------------------------------------------------*/
 
 void openthings_get_message_header(
-    struct openthings_messge_context *const context,
+    struct openthings_message_context *const context,
     struct openthings_message_header *const header )
 {
     memcpy( header, context->buffer,
@@ -200,7 +200,7 @@ void openthings_get_message_header(
 /*-----------------------------------------------------------*/
 
 enum openthings_status openthings_open_message(
-    struct openthings_messge_context *const context )
+    struct openthings_message_context *const context )
 {
     enum openthings_status result = OT_STATUS_OK;
 

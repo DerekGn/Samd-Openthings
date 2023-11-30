@@ -40,7 +40,7 @@
 
 #include "crosscompile.h"
 
-#define OPENTHINGS_LIB_VERSION "1.2.3"
+#define OPENTHINGS_LIB_VERSION "1.2.4"
 
 #define OPENTHINGS_MAX_MSG_SIZE                                                \
     255 /**< The maximum size of an openthings message. */
@@ -138,7 +138,7 @@ enum openthings_status {
  *
  * The context used for reading and writing openthings message and records data.
  */
-struct openthings_messge_context {
+struct openthings_message_context {
     uint8_t
         buffer[OPENTHINGS_MAX_MSG_SIZE]; /**< The sequential byte buffer that a
                                             message is read and written too. */
@@ -211,7 +211,7 @@ struct __CROSS_ATTR_PACKED openthings_message_footer {
  * \return void
  */
 void openthings_close_message(
-    struct openthings_messge_context *const context );
+    struct openthings_message_context *const context );
 
 /**
  * \brief Gets the openthings message context from the context
@@ -225,7 +225,7 @@ void openthings_close_message(
  * \return void
  */
 void openthings_get_message_header(
-    struct openthings_messge_context *const context,
+    struct openthings_message_context *const context,
     struct openthings_message_header *const header );
 
 /**
@@ -242,10 +242,10 @@ void openthings_get_message_header(
  */
 
 enum openthings_status openthings_open_message(
-    struct openthings_messge_context *const context );
+    struct openthings_message_context *const context );
 
 /**
- * \brief Initalise an openthings message
+ * \brief Initialise an openthings message
  *
  * \param[in] context The openthings message context.
  * \param[in] manufacturer_id The manufacturer Id.
@@ -256,7 +256,7 @@ enum openthings_status openthings_open_message(
  *
  * \return void
  */
-void openthings_init_message( struct openthings_messge_context *const context,
+void openthings_init_message( struct openthings_message_context *const context,
                               const uint8_t manufacturer_id,
                               const uint8_t product_id,
                               const uint32_t sensor_id );
@@ -270,7 +270,7 @@ void openthings_init_message( struct openthings_messge_context *const context,
  * \return bool	A return value of true indicates if the write succeeded i.e.
  * that there was enough room in the buffer
  */
-bool openthings_write_record( struct openthings_messge_context *const context,
+bool openthings_write_record( struct openthings_message_context *const context,
                               struct openthings_message_record *const record );
 
 /**
@@ -289,7 +289,7 @@ bool openthings_write_record( struct openthings_messge_context *const context,
  * there are potentially more records contained within the context. A value of
  * false indicates that there are no more records to be read.
  */
-bool openthings_read_record( struct openthings_messge_context *const context,
+bool openthings_read_record( struct openthings_message_context *const context,
                              const struct openthings_message_record *record );
 
 /**
@@ -304,7 +304,7 @@ bool openthings_read_record( struct openthings_messge_context *const context,
  * \return void
  */
 void openthings_encrypt_message(
-    struct openthings_messge_context *const context,
+    struct openthings_message_context *const context,
     const uint8_t encryption_id, const uint16_t noise );
 
 
@@ -317,7 +317,7 @@ void openthings_encrypt_message(
  * \return bool true if message was encrypted
  */
 bool openthings_decrypt_message(
-    struct openthings_messge_context *const context,
+    struct openthings_message_context *const context,
     const uint8_t encryption_id );
 
 #endif /* OPENTHINGS_H_ */

@@ -32,7 +32,7 @@ text | data | bss | dec | hex | filename | build
 ### Write Openthings Context
 
 ``` C
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
     
     // Init the context
     openthings_init_message( &context, 0xAA, 0x55, 0xDEADBEEF );

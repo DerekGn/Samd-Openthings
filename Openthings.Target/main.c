@@ -34,7 +34,7 @@
 #include "sam.h"
 #include "..\Openthings\openthings.h"
 
-void write_message( struct openthings_messge_context *context )
+void write_message( struct openthings_message_context *context )
 {
     openthings_init_message( context, 0xAA, 0x55, 0xDEADBEEF );
 
@@ -58,7 +58,7 @@ void write_message( struct openthings_messge_context *context )
     openthings_close_message( context );
 }
 
-void read_message( struct openthings_messge_context *context )
+void read_message( struct openthings_message_context *context )
 {
     uint8_t i = 0;
 
@@ -87,7 +87,7 @@ void read_message( struct openthings_messge_context *context )
 
 int main( void )
 {
-    struct openthings_messge_context context;
+    struct openthings_message_context context;
 
     write_message( &context );
 
