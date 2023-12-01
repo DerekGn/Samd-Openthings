@@ -82,12 +82,89 @@ void test_openthings_encode_record_message_float_unsigned_x4()
     TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, ARRAY_SIZE(expected));
 }
 
+void test_openthings_encode_record_message_float_unsigned_x4_point_five()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0x08};
+
+    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX4, 0.5);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX4, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, ARRAY_SIZE(expected));
+}
+
+void test_openthings_encode_record_message_float_unsigned_x4_point_zero_five()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0x01};
+
+    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX4, 0.05);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX4, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, ARRAY_SIZE(expected));
+}
+
+void test_openthings_encode_record_message_float_unsigned_x4_point_zero_one()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {};
+
+    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX4, 0.01);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX4, record.description.type);
+}
+
 void test_openthings_encode_record_message_float_unsigned_x8()
 {
     struct openthings_message_record record;
     uint8_t expected[] = {0x01, 0x20};
 
-    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX8,1.123456789);
+    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX8, 1.123456789);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX8, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, ARRAY_SIZE(expected));
+}
+
+void test_openthings_encode_record_message_float_unsigned_x8_point_five()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0x80};
+
+    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX8, 0.5);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX8, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, ARRAY_SIZE(expected));
+}
+
+void test_openthings_encode_record_message_float_unsigned_x8_point_zero_five()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0x0D};
+
+    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX8, 0.05);
+
+    TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
+    TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);
+    TEST_ASSERT_EQUAL_HEX8(UNSIGNEDX8, record.description.type);
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, record.data, ARRAY_SIZE(expected));
+}
+
+void test_openthings_encode_record_message_float_unsigned_x8_point_zero_one()
+{
+    struct openthings_message_record record;
+    uint8_t expected[] = {0x03};
+
+    enum openthings_encoding_status status = openthings_encode_record_message_float(&record, FLOAT_ENCODING_UNSIGNEDX8, 0.01);
 
     TEST_ASSERT_EQUAL_HEX8(ENCODING_OK, status);
     TEST_ASSERT_EQUAL_HEX8(ARRAY_SIZE(expected), record.description.len);

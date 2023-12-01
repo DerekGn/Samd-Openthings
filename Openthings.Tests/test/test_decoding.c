@@ -35,6 +35,20 @@ void test_openthings_decode_record_message_float_unsigned_x4()
     TEST_ASSERT_EQUAL_FLOAT(1.125, value);
 }
 
+void test_openthings_decode_record_message_float_unsigned_x4_point_five()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX4;
+    record.description.len = 1;
+    record.data[0] = 0x08;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(0.5, value);
+}
+
 void test_openthings_decode_record_message_float_unsigned_x8()
 {
     struct openthings_message_record record;
@@ -48,6 +62,48 @@ void test_openthings_decode_record_message_float_unsigned_x8()
 
     TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
     TEST_ASSERT_EQUAL_FLOAT(1.33203125, value);
+}
+
+void test_openthings_decode_record_message_float_unsigned_x8_point_five()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX8;
+    record.description.len = 1;
+    record.data[0] = 0x80;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(0.5, value);
+}
+
+void test_openthings_decode_record_message_float_unsigned_x8_point_zero_five()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX8;
+    record.description.len = 1;
+    record.data[0] = 0x0D;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(0.05078125, value);
+}
+
+void test_openthings_decode_record_message_float_unsigned_x8_point_zero_one()
+{
+    struct openthings_message_record record;
+    record.description.type = UNSIGNEDX8;
+    record.description.len = 1;
+    record.data[0] = 0x03;
+    float value;
+
+    enum openthings_decoding_status status = openthings_decode_record_message_float(&record, &value);
+
+    TEST_ASSERT_EQUAL_HEX8(DECODING_OK, status);
+    TEST_ASSERT_EQUAL_FLOAT(0.01171875, value);
 }
 
 void test_openthings_decode_record_message_float_unsigned_x12()
